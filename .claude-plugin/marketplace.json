@@ -1,0 +1,54 @@
+{
+  "name": "xari-plugins",
+  "owner": {
+    "name": "Silvia Arellano",
+    "email": "silvia@xari.dev"
+  },
+  "metadata": {
+    "description": "Opinionated Claude Code plugins for full-stack engineering workflows",
+    "version": "1.0.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "shared",
+      "source": "./plugins/shared",
+      "description": "Shared conventions, coding style, and meta-skills",
+      "version": "1.0.0",
+      "category": "conventions",
+      "tags": ["conventions", "style", "meta"]
+    },
+    {
+      "name": "architect",
+      "source": "./plugins/architect",
+      "description": "System design, tradeoff analysis, and architecture decision records",
+      "version": "1.0.0",
+      "category": "design",
+      "tags": ["architecture", "system-design", "adr"]
+    },
+    {
+      "name": "backend-dev",
+      "source": "./plugins/backend-dev",
+      "description": "API design, database schemas, and error handling patterns",
+      "version": "1.0.0",
+      "category": "backend",
+      "tags": ["api", "database", "backend"]
+    },
+    {
+      "name": "test-builder",
+      "source": "./plugins/test-builder",
+      "description": "Unit, integration, and end-to-end test generation",
+      "version": "1.0.0",
+      "category": "testing",
+      "tags": ["testing", "unit-tests", "integration", "e2e"]
+    },
+    {
+      "name": "data-engineer",
+      "source": "./plugins/data-engineer",
+      "description": "Pipeline design, schema review, and SQL optimization",
+      "version": "1.0.0",
+      "category": "data",
+      "tags": ["data", "pipelines", "sql", "schema"]
+    }
+  ]
+}

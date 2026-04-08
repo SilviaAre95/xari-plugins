@@ -1,0 +1,12 @@
+{
+  "name": "shared",
+  "version": "1.0.0",
+  "description": "Shared conventions, coding style, and meta-skills for xari-plugins",
+  "author": {
+    "name": "Silvia Arellano"
+  },
+  "repository": "https://github.com/SilviaAre95/xari-plugins",
+  "license": "MIT",
+  "keywords": ["conventions", "style", "meta"],
+  "skills": "./skills/"
+}

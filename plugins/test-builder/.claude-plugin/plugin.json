@@ -1,0 +1,12 @@
+{
+  "name": "test-builder",
+  "version": "1.0.0",
+  "description": "Unit, integration, and end-to-end test generation",
+  "author": {
+    "name": "Silvia Arellano"
+  },
+  "repository": "https://github.com/SilviaAre95/xari-plugins",
+  "license": "MIT",
+  "keywords": ["testing", "unit-tests", "integration", "e2e"],
+  "skills": "./skills/"
+}

@@ -1,0 +1,12 @@
+{
+  "name": "data-engineer",
+  "version": "1.0.0",
+  "description": "Pipeline design, schema review, and SQL optimization",
+  "author": {
+    "name": "Silvia Arellano"
+  },
+  "repository": "https://github.com/SilviaAre95/xari-plugins",
+  "license": "MIT",
+  "keywords": ["data", "pipelines", "sql", "schema"],
+  "skills": "./skills/"
+}
