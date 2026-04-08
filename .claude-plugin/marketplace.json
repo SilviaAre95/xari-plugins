@@ -49,6 +49,70 @@
       "version": "1.0.0",
       "category": "data",
       "tags": ["data", "pipelines", "sql", "schema"]
+    },
+    {
+      "name": "frontend-dev",
+      "source": "./plugins/frontend-dev",
+      "description": "Component building, styling review, and accessibility checks for React/Next.js",
+      "version": "1.0.0",
+      "category": "frontend",
+      "tags": ["frontend", "react", "nextjs", "accessibility"]
+    },
+    {
+      "name": "qa",
+      "source": "./plugins/qa",
+      "description": "Edge case discovery, bug review, and regression checking",
+      "version": "1.0.0",
+      "category": "quality",
+      "tags": ["qa", "testing", "bugs", "regression"]
+    },
+    {
+      "name": "ui-designer",
+      "source": "./plugins/ui-designer",
+      "description": "Layout review, design system audits, and responsive checks",
+      "version": "1.0.0",
+      "category": "design",
+      "tags": ["ui", "design", "layout", "responsive"]
+    },
+    {
+      "name": "ux-researcher",
+      "source": "./plugins/ux-researcher",
+      "description": "Heuristic evaluation, user flow analysis, and accessibility audits",
+      "version": "1.0.0",
+      "category": "research",
+      "tags": ["ux", "research", "usability", "accessibility"]
+    },
+    {
+      "name": "devops",
+      "source": "./plugins/devops",
+      "description": "Dockerfiles, CI/CD pipelines, and infrastructure review",
+      "version": "1.0.0",
+      "category": "infrastructure",
+      "tags": ["devops", "docker", "ci-cd", "infrastructure"]
+    },
+    {
+      "name": "security",
+      "source": "./plugins/security",
+      "description": "Code audits, dependency checks, and IAM reviews",
+      "version": "1.0.0",
+      "category": "security",
+      "tags": ["security", "audit", "dependencies", "iam"]
+    },
+    {
+      "name": "tech-writer",
+      "source": "./plugins/tech-writer",
+      "description": "README generation, API documentation, and ADR templates",
+      "version": "1.0.0",
+      "category": "documentation",
+      "tags": ["documentation", "readme", "api-docs", "technical-writing"]
+    },
+    {
+      "name": "pm",
+      "source": "./plugins/pm",
+      "description": "User stories, task breakdowns, and PRD writing",
+      "version": "1.0.0",
+      "category": "product",
+      "tags": ["product", "project-management", "user-stories", "prd"]
     }
   ]
 }

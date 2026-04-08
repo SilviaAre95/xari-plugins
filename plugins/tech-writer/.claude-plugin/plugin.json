@@ -1,0 +1,12 @@
+{
+  "name": "tech-writer",
+  "version": "1.0.0",
+  "description": "README generation, API documentation, and ADR templates",
+  "author": {
+    "name": "Silvia Arellano"
+  },
+  "repository": "https://github.com/SilviaAre95/xari-plugins",
+  "license": "MIT",
+  "keywords": ["documentation", "readme", "api-docs", "technical-writing"],
+  "skills": "./skills/"
+}

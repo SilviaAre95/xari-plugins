@@ -1,13 +1,13 @@
 {
-  "name": "architect",
+  "name": "devops",
   "version": "1.0.0",
-  "description": "System design, tradeoff analysis, and architecture decision records",
+  "description": "Dockerfiles, CI/CD pipelines, and infrastructure review",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
-  "keywords": ["architecture", "system-design", "adr"],
+  "keywords": ["devops", "docker", "ci-cd", "infrastructure"],
   "skills": "./skills/",
   "agents": "./agents/"
 }

@@ -1,0 +1,12 @@
+{
+  "name": "frontend-dev",
+  "version": "1.0.0",
+  "description": "Component building, styling review, and accessibility checks for React/Next.js",
+  "author": {
+    "name": "Silvia Arellano"
+  },
+  "repository": "https://github.com/SilviaAre95/xari-plugins",
+  "license": "MIT",
+  "keywords": ["frontend", "react", "nextjs", "accessibility"],
+  "skills": "./skills/"
+}

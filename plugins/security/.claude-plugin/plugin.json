@@ -1,13 +1,13 @@
 {
-  "name": "architect",
+  "name": "security",
   "version": "1.0.0",
-  "description": "System design, tradeoff analysis, and architecture decision records",
+  "description": "Code audits, dependency checks, and IAM reviews",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
-  "keywords": ["architecture", "system-design", "adr"],
+  "keywords": ["security", "audit", "dependencies", "iam"],
   "skills": "./skills/",
   "agents": "./agents/"
 }

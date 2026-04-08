@@ -1,13 +1,13 @@
 {
-  "name": "architect",
+  "name": "qa",
   "version": "1.0.0",
-  "description": "System design, tradeoff analysis, and architecture decision records",
+  "description": "Edge case discovery, bug review, and regression checking",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
-  "keywords": ["architecture", "system-design", "adr"],
+  "keywords": ["qa", "testing", "bugs", "regression"],
   "skills": "./skills/",
   "agents": "./agents/"
 }
