@@ -8,6 +8,5 @@
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
   "keywords": ["devops", "docker", "ci-cd", "infrastructure"],
-  "skills": "./skills/",
-  "agents": "./agents/"
+  "skills": "./skills/"
 }
