@@ -8,6 +8,7 @@ Applies in every tier, including `bypassPermissions`.
 ```json
 "deny": [
   "Bash(sudo *)",
+  "Bash(rm -rf *)",
   "Bash(rm -rf /*)",
   "Bash(rm -rf ~/*)",
   "Write(.git/**)",

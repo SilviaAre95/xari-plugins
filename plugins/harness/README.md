@@ -27,6 +27,8 @@ Read-only tools are auto-approved in every tier so exploration never stalls.
    permissions. See `docs/reference/permission-policy.md`: the floor (`deny`) and
    hard gates (`ask`) go in `~/.claude/settings.json`.
 
-## State files (git-ignored)
+## State files
 
-`.cc-loop-active` sentinel · `.cc-loop-state` counter · `.cc-verify` gate override · `.cc-loop.log` last gate output.
+**Git-ignored (transient):** `.cc-loop-active` sentinel · `.cc-loop-state` counter · `.cc-loop.log` last gate output.
+
+**Committed (project config):** `.cc-verify` — the gate command run on every stop attempt. Commit this file so a fresh clone keeps the right gate. Note: its contents are `eval`'d by the loop gate, so it should contain only your trusted verify command.

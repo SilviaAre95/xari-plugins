@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Stop hook: build-test-fix loop. Opt-in via .cc-loop-active sentinel.
 # Blocks Claude from stopping until the project's verify gate is green, with a
-# circuit breaker after MAX failed attempts. Recursion-guarded via stop_hook_active.
+# circuit breaker after MAX failed attempts. Bounded by attempt counter, not
+# stop_hook_active (which Claude Code sets on every re-entry after a block).
 set -uo pipefail
 MAX=5
 INPUT=$(cat)
@@ -14,12 +15,7 @@ LOG="$DIR/.cc-loop.log"
 # 1. Loop not armed -> allow stop.
 [ -f "$SENTINEL" ] || exit 0
 
-# 2. Already inside a stop-hook loop -> allow (prevent infinite re-entry).
-if [ "$(printf '%s' "$INPUT" | jq -r '.stop_hook_active // false')" = "true" ]; then
-  exit 0
-fi
-
-# 3. Resolve the gate command: env override (tests) > .cc-verify > default.
+# 2. Resolve the gate command: env override (tests) > .cc-verify > default.
 if [ -n "${CC_GATE_CMD:-}" ]; then
   GATE="$CC_GATE_CMD"
 elif [ -f "$GATE_FILE" ]; then
@@ -28,13 +24,13 @@ else
   GATE="npm run lint && npm run build && npm test"
 fi
 
-# 4. Run the gate.
+# 3. Run the gate.
 if ( cd "$DIR" && eval "$GATE" ) >"$LOG" 2>&1; then
   rm -f "$SENTINEL" "$STATE" "$LOG"
   exit 0   # green -> allow stop
 fi
 
-# 5. Failed: increment attempt counter.
+# 4. Failed: increment attempt counter.
 ATTEMPTS=$(cat "$STATE" 2>/dev/null || echo 0)
 [[ "$ATTEMPTS" =~ ^[0-9]+$ ]] || ATTEMPTS=0
 ATTEMPTS=$((ATTEMPTS + 1))
@@ -51,7 +47,7 @@ if [ "$ATTEMPTS" -ge "$MAX" ]; then
   exit 0
 fi
 
-# 6. Under the cap: block and feed failures back so Claude fixes and continues.
+# 5. Under the cap: block and feed failures back so Claude fixes and continues.
 jq -n --arg n "$ATTEMPTS" --arg max "$MAX" --arg gate "$GATE" --arg log "$TAIL" \
   '{decision:"block", reason:("Verify gate failed (attempt " + $n + "/" + $max + "): " + $gate + "\nFix the failures and continue; do not stop until green.\n" + $log)}'
 exit 0

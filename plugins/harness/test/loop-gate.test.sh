@@ -30,8 +30,9 @@ check() { local name="$1" got="$2" want="$3"; if [ "$got" = "$want" ]; then echo
 # 1. Not armed -> allow stop (no output)
 out=$(run 0 "true" false); d=$(decision "$(printf '%s' "$out" | grep -v '^::')"); check "unarmed allows stop" "$d" "ALLOW"
 
-# 2. stop_hook_active -> allow (recursion guard)
-out=$(run 1 "false" true); d=$(decision "$(printf '%s' "$out" | grep -v '^::')"); check "stop_hook_active allows stop" "$d" "ALLOW"
+# 2. stop_hook_active does NOT short-circuit iteration — counter controls the loop.
+out=$(run 1 "false" true); d=$(decision "$(printf '%s' "$out" | grep -v '^::')")
+check "stop_hook_active no longer short-circuits: still blocks when armed+fail" "$d" "block"
 
 # 3. Armed + gate passes -> allow + sentinel removed
 out=$(run 1 "true" false); dir=$(printf '%s' "$out" | sed -n 's/^:://p'); d=$(decision "$(printf '%s' "$out" | grep -v '^::')")
@@ -54,5 +55,23 @@ out=$(CLAUDE_PROJECT_DIR="$dir" CC_GATE_CMD="false" printf '{"stop_hook_active":
 d=$(decision "$out"); check "corrupted state still blocks" "$d" "block"
 state_val=$(cat "$dir/.cc-loop-state" 2>/dev/null || echo "missing")
 check "corrupted state sanitized to 1" "$state_val" "1"
+
+# 7. Multi-turn regression: stop_hook_active=true on every call, persistent state.
+#    Counter — not the flag — must bound the loop: block calls 1-5, allow call 6.
+mt_dir=$(mktemp -d); touch "$mt_dir/.cc-loop-active"
+for i in 1 2 3 4 5; do
+  mt_out=$(printf '{"stop_hook_active":true,"cwd":"%s"}' "$mt_dir" \
+    | CLAUDE_PROJECT_DIR="$mt_dir" CC_GATE_CMD="false" bash "$HOOK")
+  mt_d=$(decision "$mt_out")
+  check "multi-turn call $i blocks (stop_hook_active=true, gate=fail)" "$mt_d" "block"
+done
+# After 5 failures sentinel must be gone.
+[ -f "$mt_dir/.cc-loop-active" ] && { echo "FAIL - multi-turn: sentinel should be removed after breaker"; fail=1; } \
+  || echo "ok   - multi-turn: sentinel removed after 5 attempts"
+# 6th call: sentinel gone -> hook exits 0 (ALLOW) with no output.
+mt_out6=$(printf '{"stop_hook_active":true,"cwd":"%s"}' "$mt_dir" \
+  | CLAUDE_PROJECT_DIR="$mt_dir" CC_GATE_CMD="false" bash "$HOOK")
+mt_d6=$(decision "$mt_out6")
+check "multi-turn call 6 allows (sentinel gone)" "$mt_d6" "ALLOW"
 
 exit $fail

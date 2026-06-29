@@ -15,9 +15,9 @@ Set up the harness in the current project. Make each change visible and ask befo
    ```
    .cc-loop-active
    .cc-loop-state
-   .cc-verify
    .cc-loop.log
    ```
+   `.cc-verify` is project config (not transient state) and **should be committed** so a fresh clone retains the correct gate command. Do NOT add it to `.gitignore`.
 
 3. **Project allow list** — merge the `permissions.allow` block from the harness permission policy into this project's `.claude/settings.json` (create the file if absent). Do NOT duplicate entries already present. The canonical block is:
    ```json
