@@ -1,0 +1,13 @@
+{
+  "name": "harness",
+  "version": "1.0.0",
+  "description": "Tiered autonomy + build-test-fix loop for hands-off AI workflows",
+  "author": {
+    "name": "Silvia Arellano"
+  },
+  "repository": "https://github.com/SilviaAre95/xari-plugins",
+  "license": "MIT",
+  "keywords": ["workflow", "automation", "hooks", "autonomy", "loop"],
+  "commands": "./commands/",
+  "hooks": "./hooks/hooks.json"
+}
