@@ -113,6 +113,14 @@
       "version": "1.0.0",
       "category": "product",
       "tags": ["product", "project-management", "user-stories", "prd"]
+    },
+    {
+      "name": "harness",
+      "source": "./plugins/harness",
+      "description": "Tiered autonomy + build-test-fix loop for hands-off AI workflows",
+      "version": "1.0.0",
+      "category": "workflow",
+      "tags": ["workflow", "automation", "hooks", "autonomy", "loop"]
     }
   ]
 }
