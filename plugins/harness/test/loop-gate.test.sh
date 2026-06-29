@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Decision-table tests for the loop-gate Stop hook. Uses a temp project dir and
+# CC_GATE_CMD to fake pass/fail without a real build.
+set -uo pipefail
+HOOK="$(cd "$(dirname "$0")/../hooks/scripts" && pwd)/loop-gate.sh"
+fail=0
+decision() {
+  # Empty/whitespace-only output means the hook exited without blocking = ALLOW.
+  # jq 1.7.1-apple exits 0 with no output on empty stdin, so the || never fires;
+  # we must guard explicitly to avoid returning "" instead of "ALLOW".
+  local stripped
+  stripped=$(printf '%s' "$1" | tr -d '[:space:]')
+  [ -z "$stripped" ] && { echo ALLOW; return 0; }
+  printf '%s' "$1" | jq -r '.decision // "ALLOW"' 2>/dev/null || echo PARSE_ERR
+}
+
+# helper: run hook in a fresh temp dir; args: armed(0/1) gatecmd stop_active
+run() {
+  local armed="$1" gate="$2" stopactive="$3"
+  local dir; dir=$(mktemp -d)
+  [ "$armed" = "1" ] && touch "$dir/.cc-loop-active"
+  CLAUDE_PROJECT_DIR="$dir" CC_GATE_CMD="$gate" \
+    printf '{"stop_hook_active":%s,"cwd":"%s"}' "$stopactive" "$dir" \
+    | CLAUDE_PROJECT_DIR="$dir" CC_GATE_CMD="$gate" bash "$HOOK"
+  echo "::$dir"  # emit dir on its own marker line for post-checks
+}
+
+check() { local name="$1" got="$2" want="$3"; if [ "$got" = "$want" ]; then echo "ok   - $name"; else echo "FAIL - $name (got '$got' want '$want')"; fail=1; fi; }
+
+# 1. Not armed -> allow stop (no output)
+out=$(run 0 "true" false); d=$(decision "$(printf '%s' "$out" | grep -v '^::')"); check "unarmed allows stop" "$d" "ALLOW"
+
+# 2. stop_hook_active -> allow (recursion guard)
+out=$(run 1 "false" true); d=$(decision "$(printf '%s' "$out" | grep -v '^::')"); check "stop_hook_active allows stop" "$d" "ALLOW"
+
+# 3. Armed + gate passes -> allow + sentinel removed
+out=$(run 1 "true" false); dir=$(printf '%s' "$out" | sed -n 's/^:://p'); d=$(decision "$(printf '%s' "$out" | grep -v '^::')")
+check "green allows stop" "$d" "ALLOW"
+[ -f "$dir/.cc-loop-active" ] && { echo "FAIL - green removes sentinel"; fail=1; } || echo "ok   - green removes sentinel"
+
+# 4. Armed + gate fails, attempt < MAX -> block
+out=$(run 1 "false" false); d=$(decision "$(printf '%s' "$out" | grep -v '^::')")
+check "fail under cap blocks stop" "$d" "block"
+
+# 5. Armed + gate fails at MAX -> block once (summary) AND sentinel removed
+dir=$(mktemp -d); touch "$dir/.cc-loop-active"; echo 4 > "$dir/.cc-loop-state"
+out=$(CLAUDE_PROJECT_DIR="$dir" CC_GATE_CMD="false" printf '{"stop_hook_active":false,"cwd":"%s"}' "$dir" | CLAUDE_PROJECT_DIR="$dir" CC_GATE_CMD="false" bash "$HOOK")
+d=$(decision "$out"); check "breaker still blocks once to summarize" "$d" "block"
+[ -f "$dir/.cc-loop-active" ] && { echo "FAIL - breaker removes sentinel"; fail=1; } || echo "ok   - breaker removes sentinel"
+
+exit $fail
