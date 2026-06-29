@@ -48,4 +48,11 @@ out=$(CLAUDE_PROJECT_DIR="$dir" CC_GATE_CMD="false" printf '{"stop_hook_active":
 d=$(decision "$out"); check "breaker still blocks once to summarize" "$d" "block"
 [ -f "$dir/.cc-loop-active" ] && { echo "FAIL - breaker removes sentinel"; fail=1; } || echo "ok   - breaker removes sentinel"
 
+# 6. Corrupted state file (leading digit) -> sanitized to 0, incremented to 1, still blocks
+dir=$(mktemp -d); touch "$dir/.cc-loop-active"; printf '5x' > "$dir/.cc-loop-state"
+out=$(CLAUDE_PROJECT_DIR="$dir" CC_GATE_CMD="false" printf '{"stop_hook_active":false,"cwd":"%s"}' "$dir" | CLAUDE_PROJECT_DIR="$dir" CC_GATE_CMD="false" bash "$HOOK")
+d=$(decision "$out"); check "corrupted state still blocks" "$d" "block"
+state_val=$(cat "$dir/.cc-loop-state" 2>/dev/null || echo "missing")
+check "corrupted state sanitized to 1" "$state_val" "1"
+
 exit $fail

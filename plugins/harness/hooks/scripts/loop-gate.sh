@@ -36,6 +36,7 @@ fi
 
 # 5. Failed: increment attempt counter.
 ATTEMPTS=$(cat "$STATE" 2>/dev/null || echo 0)
+[[ "$ATTEMPTS" =~ ^[0-9]+$ ]] || ATTEMPTS=0
 ATTEMPTS=$((ATTEMPTS + 1))
 echo "$ATTEMPTS" > "$STATE"
 
