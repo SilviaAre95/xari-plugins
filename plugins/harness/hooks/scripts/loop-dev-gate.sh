@@ -45,9 +45,11 @@ if ! ( cd "$DIR" && eval "$GATE" ) >"$LOG" 2>&1; then
   exit 0
 fi
 
+echo 0 > "$STATE"
+
 # 5. Stage 2 — reviews marker.
 if [ ! -f "$MARKER" ]; then
-  GRADERS=$(grep -E '^graders:' "$CFG" 2>/dev/null | head -1 | sed -E 's/^graders:[[:space:]]*//')
+  GRADERS=$(grep -E '^graders:' "$CFG" 2>/dev/null | head -1 | sed -E 's/^graders:[[:space:]]*//; s/[[:space:]]*#.*$//')
   [ -z "$GRADERS" ] && GRADERS="[code-review, security, bugs]"
   jq -n --arg g "$GRADERS" \
     '{decision:"block", reason:("Deterministic gate is green. Now run the review stages: " + $g + ". Dispatch one subagent per grader against the diff, fix every blocking finding, and re-verify. When ALL graders are clean AND you have made no further code edits, create the marker to finish:\n\n  touch .cc-dev-reviews-passed\n\nDo NOT create the marker before the reviews are actually clean.")}'
