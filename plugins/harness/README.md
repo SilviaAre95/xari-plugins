@@ -24,7 +24,9 @@ Extends `/loop-build` into a full staged dev loop: spec preflight, plan, build,
 then **review stages** (`code-review`, `security`, `bugs` by default) each run
 as a dispatched subagent against the diff. Its `Stop` hook won't let Claude
 finish until `.cc-verify` is green **and** `.cc-dev-reviews-passed` exists —
-any further edit invalidates the marker and re-arms the reviews. On success it
+a failing `.cc-verify` clears the marker, so a broken build forces reviews to
+re-run. Otherwise the marker is trust-based: the command instructs the agent
+to create it only once reviews are clean and no further edits remain. On success it
 pushes the branch and opens a PR (unless `open_pr: false`). Config — graders,
 `max_retries`, diff `base`, `open_pr` — lives in `.cc-dev.yaml`. Pass
 `--check-plan` to pause after the plan step for your approval before it builds.
@@ -42,4 +44,4 @@ pushes the branch and opens a PR (unless `open_pr: false`). Config — graders,
 
 **Git-ignored (transient):** `.cc-loop-active` sentinel · `.cc-loop-state` counter · `.cc-loop.log` last gate output · `.cc-loop-dev-active` sentinel · `.cc-loop-dev-state` counter · `.cc-dev-reviews-passed` marker · `.cc-loop-dev.log` last gate output.
 
-**Committed (project config):** `.cc-verify` — the gate command run on every stop attempt. Commit this file so a fresh clone keeps the right gate. Note: its contents are `eval`'d by the loop gate, so it should contain only your trusted verify command. `.cc-dev.yaml` — `/loop-dev` config (graders, max_retries, base, open_pr).
+**Committed (project config):** `.cc-verify` — the gate command run on every stop attempt; commit it so a fresh clone keeps the right gate and its contents are trusted (they're `eval`'d by the loop gate) · `.cc-dev.yaml` — `/loop-dev` config (graders, max_retries, base, open_pr).
