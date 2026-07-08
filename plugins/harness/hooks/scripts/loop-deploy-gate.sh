@@ -12,6 +12,16 @@ STATE="$DIR/.cc-deploy-state"
 CFG="$DIR/.cc-deploy.yaml"
 LOG="$DIR/.cc-deploy.log"
 
+_cfg_get_str() {  # _cfg_get_str <key> — read a string value from $CFG, honoring quotes + inline comments
+  local key="$1" raw
+  raw="$(grep -E "^${key}:" "$CFG" 2>/dev/null | head -1 | sed -E "s/^${key}:[[:space:]]*//")"
+  case "$raw" in
+    '"'*) printf '%s' "$raw" | sed -E 's/^"([^"]*)".*$/\1/' ;;
+    "'"*) printf '%s' "$raw" | sed -E "s/^'([^']*)'.*\$/\\1/" ;;
+    *)    printf '%s' "$raw" | sed -E 's/[[:space:]]*#.*$//; s/[[:space:]]*$//' ;;
+  esac
+}
+
 # 1. Not armed for loop-deploy -> allow stop.
 [ -f "$SENTINEL" ] || exit 0
 
@@ -24,15 +34,11 @@ fi
 
 # 3. Resolve verify + rollback: env overrides (tests) > .cc-deploy.yaml.
 if [ -n "${CC_DEPLOY_VERIFY_CMD:-}" ]; then VERIFY="$CC_DEPLOY_VERIFY_CMD"
-elif [ -f "$CFG" ]; then VERIFY="$(grep -E '^verify:' "$CFG" | head -1 | sed -E 's/^verify:[[:space:]]*//')"
+elif [ -f "$CFG" ]; then VERIFY="$(_cfg_get_str verify)"
 else VERIFY=""; fi
 if [ -n "${CC_DEPLOY_ROLLBACK_CMD:-}" ]; then ROLLBACK="$CC_DEPLOY_ROLLBACK_CMD"
-elif [ -f "$CFG" ]; then ROLLBACK="$(grep -E '^rollback:' "$CFG" | head -1 | sed -E 's/^rollback:[[:space:]]*//')"
+elif [ -f "$CFG" ]; then ROLLBACK="$(_cfg_get_str rollback)"
 else ROLLBACK=""; fi
-
-# Strip surrounding quotes a YAML author may have added.
-VERIFY="${VERIFY%\"}"; VERIFY="${VERIFY#\"}"
-ROLLBACK="${ROLLBACK%\"}"; ROLLBACK="${ROLLBACK#\"}"
 
 # 4. No verify command configured -> cannot gate; tell the agent and allow stop.
 if [ -z "$VERIFY" ]; then
@@ -58,6 +64,7 @@ if [ "$ATTEMPTS" -ge "$MAX" ]; then
   if [ -n "$ROLLBACK" ]; then
     if ( cd "$DIR" && eval "$ROLLBACK" ) >>"$LOG" 2>&1; then ROLLMSG="rolled back via: $ROLLBACK"; else ROLLMSG="ROLLBACK FAILED: $ROLLBACK — prod may be broken, act now"; fi
   fi
+  TAIL="$(tail -40 "$LOG" 2>/dev/null)"
   rm -f "$SENTINEL" "$STATE"
   jq -n --arg max "$MAX" --arg roll "$ROLLMSG" --arg log "$TAIL" \
     '{decision:"block", reason:("Prod still failing after " + $max + " redeploys. " + $roll + ". STOP redeploying — escalate to the user with what broke and what you tried:\n" + $log)}'

@@ -42,4 +42,19 @@ out=$(CC_DEPLOY_VERIFY_CMD="false" CC_DEPLOY_ROLLBACK_CMD="true" run "$d")
 has "cfg cap honored" "$out" "escalate"
 rm -rf "$d"
 
+# 6. Config-file verify/rollback at cap (no env override) -> quotes + inline comment parsed correctly
+d=$(mktemp -d); touch "$d/.cc-deploy-active"; echo 1 > "$d/.cc-deploy-state"
+printf 'max_redeploys: 2\nverify: "false"\nrollback: "touch ROLLED_CFG"   # inline comment\n' > "$d/.cc-deploy.yaml"
+out=$(run "$d")
+has "cfg-driven cap triggers escalate" "$out" "escalate"
+eq "cfg-driven rollback ran" "$([ -f "$d/ROLLED_CFG" ] && echo yes || echo no)" "yes"
+rm -rf "$d"
+
+# 7. No verify configured (no .cc-deploy.yaml, no env override) -> block + disarm
+d=$(mktemp -d); touch "$d/.cc-deploy-active"
+out=$(run "$d")
+has "no-verify blocks" "$out" 'no `verify:` command'
+eq "no-verify disarms" "$([ -f "$d/.cc-deploy-active" ] && echo present || echo gone)" "gone"
+rm -rf "$d"
+
 echo "---"; echo "pass=$pass fail=$fail"; [ "$fail" -eq 0 ]
