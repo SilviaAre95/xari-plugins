@@ -1,0 +1,5 @@
+# /loop-dev config. Committed per-project.
+graders: [code-review, security, bugs]   # review stages the agent must run + pass
+max_retries: 3                            # failed deterministic attempts before circuit breaker
+base: main                                # diff base the reviews compare against
+open_pr: true                             # false = stop at green, do not open a PR

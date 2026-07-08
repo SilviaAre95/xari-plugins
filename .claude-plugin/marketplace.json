@@ -121,6 +121,14 @@
       "version": "1.0.0",
       "category": "workflow",
       "tags": ["workflow", "automation", "hooks", "autonomy", "loop"]
+    },
+    {
+      "name": "feature-bank",
+      "source": "./plugins/feature-bank",
+      "description": "Source-of-truth feature specs with preflight/postflight gates that stop agent drift",
+      "version": "1.0.0",
+      "category": "workflow",
+      "tags": ["feature-bank", "specs", "drift", "workflow", "governance"]
     }
   ]
 }
