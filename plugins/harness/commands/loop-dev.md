@@ -15,11 +15,11 @@ Work in the `acceptEdits` tier (Shift+Tab) so edits and the allowlist run withou
 1. **Preflight (specs).** If `docs/features/INDEX.md` exists, run the `feature-bank` preflight: identify affected feature(s), confirm the change satisfies their `acceptance_criteria` and violates no `non_goals`. On a spec mismatch, STOP and surface the diff-first escape hatch — do not code around the spec.
 2. **Plan.** Write a short implementation plan. If the invocation included `--check-plan`, post the plan and WAIT for the user's approval before building.
 3. **Build.** Implement the task.
-4. **Review stages.** For each grader in `.cc-dev.yaml` `graders` (default `code-review`, `security`, `bugs`), dispatch a **subagent** to review the diff against `base` (default `main`):
+4. **Review stages (run in PARALLEL).** Dispatch one subagent per grader in `.cc-dev.yaml` `graders` (default `code-review`, `security`, `bugs`) **all at once — in a single batch of concurrent Task calls, not one after another** — each reviewing the diff against `base` (default `main`):
    - `code-review` → correctness/quality review (or the `/code-review` skill).
    - `security` → the `security:code-audit` skill (OWASP, injection, authz, secrets).
    - `bugs` → the `qa:bug-review` skill (edge cases, logic errors).
-   Collect blocking findings; fix every one; re-run the affected grader until clean.
+   Wait for all of them, then collect every blocking finding across all graders into one list; fix them; re-run only the affected graders (again in parallel) until all are clean. Running the graders concurrently is the point — do not serialize them.
 5. **Finish.** When the deterministic gate (`.cc-verify`) is green AND all graders are clean AND you have made no further edits, create the marker: `touch .cc-dev-reviews-passed`.
 6. **PR** (if `.cc-dev.yaml` `open_pr` is not false). Push the branch and open a PR to `base`. Post to Slack: a one-line "what changed", the **bare** PR URL on its own line, and the Linear issue key. Move the Linear issue to "In Review". Never merge — that is the user's call from their phone.
 
