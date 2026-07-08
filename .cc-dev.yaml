@@ -1,0 +1,5 @@
+# /loop-dev config.
+graders: [code-review, security, bugs]
+max_retries: 3
+base: main
+open_pr: true
