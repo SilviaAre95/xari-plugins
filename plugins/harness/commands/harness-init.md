@@ -20,12 +20,17 @@ Set up the harness in the current project. Make each change visible and ask befo
    .cc-loop-dev-state
    .cc-dev-reviews-passed
    .cc-loop-dev.log
+   .cc-deploy-active
+   .cc-deploy-state
+   .cc-deploy.log
    ```
    `.cc-verify` is project config (not transient state) and **should be committed** so a fresh clone retains the correct gate command. Do NOT add it to `.gitignore`.
 
 3. **Dev loop config** — if `.cc-dev.yaml` does not exist at the project root, copy it from the plugin's `templates/.cc-dev.yaml`. This is committed config (like `.cc-verify`) — do NOT add it to `.gitignore`.
 
-4. **Project allow list** — merge the `permissions.allow` block from the harness permission policy into this project's `.claude/settings.json` (create the file if absent). Do NOT duplicate entries already present. The canonical block is:
+4. **Deploy loop config** — if `.cc-deploy.yaml` does not exist at the project root, copy it from the plugin's `templates/.cc-deploy.yaml`. This is committed config (like `.cc-verify`) — do NOT add it to `.gitignore`.
+
+5. **Project allow list** — merge the `permissions.allow` block from the harness permission policy into this project's `.claude/settings.json` (create the file if absent). Do NOT duplicate entries already present. The canonical block is:
    ```json
    "allow": [
      "Bash(npm run *)", "Bash(npm install*)", "Bash(npm test*)",
@@ -36,6 +41,6 @@ Set up the harness in the current project. Make each change visible and ask befo
    ```
    Add project-specific deploy-tool reads (e.g. `Bash(railway status*)`) only if that tooling is present.
 
-5. **Remind the user** that the universal floor (`deny`) and hard gates (`ask`) belong in `~/.claude/settings.json` (global), not the project — point them to `docs/reference/permission-policy.md` in the xari-plugins repo, and note that this command intentionally does not edit global settings.
+6. **Remind the user** that the universal floor (`deny`) and hard gates (`ask`) belong in `~/.claude/settings.json` (global), not the project — point them to `docs/reference/permission-policy.md` in the xari-plugins repo, and note that this command intentionally does not edit global settings.
 
 Report a summary of exactly which files you changed.

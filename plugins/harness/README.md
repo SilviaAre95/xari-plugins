@@ -31,17 +31,30 @@ pushes the branch and opens a PR (unless `open_pr: false`). Config — graders,
 `max_retries`, diff `base`, `open_pr` — lives in `.cc-dev.yaml`. Pass
 `--check-plan` to pause after the plan step for your approval before it builds.
 
+### `/loop-deploy [--env prod|staging]`
+
+Deploys, watches the rollout, then verifies prod (health + smoke + error-rate)
+and won't let Claude stop while verification is failing — it fixes the problem
+(optionally via `/loop-dev`) and redeploys until healthy. After
+`max_redeploys` failed attempts the `Stop` hook runs `rollback`, disarms the
+loop, and escalates instead of looping forever, so prod is never left broken.
+Deploying to prod is a hard Approve/Deny gate, and a deploy that runs a DB
+migration needs a **second** explicit approval when `migrations_gate` is true.
+Config — `deploy`, `watch`, `verify`, `rollback`, `max_redeploys`,
+`migrations_gate` — lives in `.cc-deploy.yaml`.
+
 ## Setup
 
 1. Enable the plugin (it's in the `xari-plugins` marketplace).
 2. Run `/harness-init` in each project to create `.cc-verify`, git-ignore loop
-   state, scaffold `.cc-dev.yaml`, and seed the project allow list.
+   state, scaffold `.cc-dev.yaml` and `.cc-deploy.yaml`, and seed the project
+   allow list.
 3. Add the **permission policy** to your settings — a plugin cannot grant
    permissions. See `docs/reference/permission-policy.md`: the floor (`deny`) and
    hard gates (`ask`) go in `~/.claude/settings.json`.
 
 ## State files
 
-**Git-ignored (transient):** `.cc-loop-active` sentinel · `.cc-loop-state` counter · `.cc-loop.log` last gate output · `.cc-loop-dev-active` sentinel · `.cc-loop-dev-state` counter · `.cc-dev-reviews-passed` marker · `.cc-loop-dev.log` last gate output.
+**Git-ignored (transient):** `.cc-loop-active` sentinel · `.cc-loop-state` counter · `.cc-loop.log` last gate output · `.cc-loop-dev-active` sentinel · `.cc-loop-dev-state` counter · `.cc-dev-reviews-passed` marker · `.cc-loop-dev.log` last gate output · `.cc-deploy-active` sentinel · `.cc-deploy-state` counter · `.cc-deploy.log` last gate output.
 
-**Committed (project config):** `.cc-verify` — the gate command run on every stop attempt; commit it so a fresh clone keeps the right gate and its contents are trusted (they're `eval`'d by the loop gate) · `.cc-dev.yaml` — `/loop-dev` config (graders, max_retries, base, open_pr).
+**Committed (project config):** `.cc-verify` — the gate command run on every stop attempt; commit it so a fresh clone keeps the right gate and its contents are trusted (they're `eval`'d by the loop gate) · `.cc-dev.yaml` — `/loop-dev` config (graders, max_retries, base, open_pr) · `.cc-deploy.yaml` — `/loop-deploy` config (deploy, watch, verify, rollback, max_redeploys, migrations_gate).
