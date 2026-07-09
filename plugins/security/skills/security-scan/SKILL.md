@@ -1,12 +1,15 @@
 ---
 name: security-scan
-description: Scan your Claude Code configuration (.claude/ directory) for security vulnerabilities, misconfigurations, and injection risks using AgentShield. Checks CLAUDE.md, settings.json, MCP servers, hooks, and agent definitions.
-origin: ECC
+description: "Scan your Claude Code configuration (.claude/ directory) for security vulnerabilities, misconfigurations, and injection risks using AgentShield. Checks CLAUDE.md, settings.json, MCP servers, hooks, and agent definitions."
+user-invocable: true
+argument-hint: "[path-to-.claude-dir] [--min-severity low|medium|high]"
 ---
 
 # Security Scan Skill
 
-Audit your Claude Code configuration for security issues using [AgentShield](https://github.com/affaan-m/agentshield).
+Audit your Claude Code configuration for security issues using [AgentShield](https://github.com/affaan-m/agentshield) (adapted from ECC).
+
+> **External dependency**: this skill shells out to the third-party npm package `ecc-agentshield` — it is NOT bundled with the plugin. First run downloads it via `npx` (network required). If the download or the tool fails, report that the scan could not run and stop — do not improvise a manual scan and present it as AgentShield output.
 
 ## When to Activate
 
@@ -40,6 +43,8 @@ npm install -g ecc-agentshield
 # Or run directly via npx (no install needed)
 npx ecc-agentshield scan .
 ```
+
+Supply-chain note (this is a security skill — practice what it preaches): prefer pinning a reviewed version (`npm install -g ecc-agentshield@<version>`) over floating `npx` in CI or shared environments.
 
 ## Usage
 
