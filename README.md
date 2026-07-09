@@ -1,6 +1,6 @@
 # xari-plugins
 
-Opinionated Claude Code plugins for full-stack engineering workflows. 16 plugins, 45 skills, 6 commands, 5 sub-agents, and 4 stack profiles.
+Opinionated Claude Code plugins for full-stack engineering workflows. 16 plugins, 46 skills, 6 commands, 5 sub-agents, and 5 stack profiles.
 
 ## Install
 
@@ -54,13 +54,14 @@ Coding conventions, meta-skills, and stack profiles.
 
 | Skill | Description |
 |-------|-------------|
-| `/conventions` | Apply xari coding style — TypeScript-first, minimal abstractions, conventional commits |
+| `/conventions` | Apply xari working conventions — simplicity-first, explicit errors, conventional commits (language-agnostic) |
 | `/create-skill` | Generate a new SKILL.md with proper frontmatter and structure |
 | `/xari-init` | Bootstrap a repo as a xari workspace — plugin fleet in `.claude/settings.json`, CLAUDE.md header, harness handoff |
 | `/xari-onboard` | Onboard a project from any starting point — create + link Linear project ↔ vault note ↔ repo, adapting to what exists |
 
-**Stack profiles** (auto-loaded based on project files):
-- `nextjs-vercel` — Next.js App Router + Vercel deployment conventions
+**Stack profiles** (auto-loaded based on project files — this is where language/stack opinions live):
+- `nextjs-vercel` — Next.js App Router + TypeScript style + Tailwind/Prisma + Vercel conventions
+- `expo-mobile` — Expo Router, secure storage, permissions, EAS build/release
 - `python-gcp` — FastAPI/Flask + GCP (Cloud Run, BigQuery, Pub/Sub)
 - `terraform` — IaC module structure, state management, provider conventions
 - `generic` — Language-agnostic fallback conventions
