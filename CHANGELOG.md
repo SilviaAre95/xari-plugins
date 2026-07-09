@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 1.3.0] — 2026-07-09
+
+### Added
+- **`shared` `1.2.0`** — new `/xari-onboard` command: onboard a project from any starting point (existing repo, existing vault note, or a bare idea) into the linked triangle **Linear project ↔ vault note ↔ repo**. Takes inventory first, creates only what's missing (knowledge → tracking → code), wires the cross-links idempotently, and degrades gracefully for users without an Obsidian vault or Linear connection.
+
 ## [marketplace 1.2.0] — 2026-07-09
 
 ### Added
