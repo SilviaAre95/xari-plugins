@@ -7,9 +7,7 @@ argument-hint: "<resource-or-feature> [rest|graphql]"
 
 # API Design
 
-Design the API for: **$0**
-
-Style: **$1** (default: REST)
+Design the API for: **$ARGUMENTS** (style defaults to REST)
 
 ## Steps
 

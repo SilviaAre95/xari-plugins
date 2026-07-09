@@ -7,9 +7,7 @@ argument-hint: "<action: audit|scaffold|extend> [focus: colors|typography|spacin
 
 # Design System
 
-Action: **$0** (audit, scaffold, or extend)
-
-Focus: **$1** (default: all)
+Perform the requested design-system action (audit, scaffold, or extend) for: **$ARGUMENTS** (focus defaults to all)
 
 ## Audit Mode
 

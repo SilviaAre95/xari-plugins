@@ -1,12 +1,17 @@
 {
   "name": "pm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "User stories, task breakdowns, and PRD writing",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
-  "keywords": ["product", "project-management", "user-stories", "prd"],
+  "keywords": [
+    "product",
+    "project-management",
+    "user-stories",
+    "prd"
+  ],
   "skills": "./skills/"
 }

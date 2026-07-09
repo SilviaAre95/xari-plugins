@@ -7,9 +7,7 @@ argument-hint: "<feature-or-endpoint> [framework: vitest|jest]"
 
 # Integration Test Generator
 
-Generate integration tests for: **$0**
-
-Framework: **$1** (default: vitest)
+Generate integration tests for: **$ARGUMENTS** (framework defaults to vitest)
 
 ## Steps
 

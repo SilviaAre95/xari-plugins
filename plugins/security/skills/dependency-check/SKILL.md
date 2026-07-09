@@ -7,9 +7,7 @@ argument-hint: "<package-manager: npm|pip|go> [mode: audit|update|cleanup]"
 
 # Dependency Check
 
-Package manager: **$0** (default: npm)
-
-Mode: **$1** (default: audit)
+Check dependencies per: **$ARGUMENTS** (package manager defaults to npm, mode defaults to audit)
 
 ## Audit Mode
 

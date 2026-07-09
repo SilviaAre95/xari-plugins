@@ -7,9 +7,7 @@ argument-hint: "<feature-name> [audience: engineering|stakeholders|both]"
 
 # PRD Writer
 
-Feature: **$0**
-
-Audience: **$1** (default: both)
+Write a PRD for the feature: **$ARGUMENTS** (audience defaults to both engineering and stakeholders)
 
 ## Steps
 

@@ -1,6 +1,6 @@
 {
   "name": "shared",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Shared conventions, coding style, and meta-skills for xari-plugins",
   "author": {
     "name": "Silvia Arellano"

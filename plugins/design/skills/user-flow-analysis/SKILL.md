@@ -7,9 +7,7 @@ argument-hint: "<flow-name: signup|checkout|onboarding|...> [persona]"
 
 # User Flow Analysis
 
-Analyze the flow: **$0**
-
-User persona: **$1** (default: general user)
+Analyze the flow: **$ARGUMENTS** (user persona defaults to general user)
 
 ## Steps
 

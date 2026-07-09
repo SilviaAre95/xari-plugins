@@ -7,9 +7,7 @@ argument-hint: "<file-or-pr-or-description> [mode: diagnose|verify-fix]"
 
 # Bug Review
 
-Review: **$0**
-
-Mode: **$1** (default: diagnose)
+Review: **$ARGUMENTS** (mode defaults to diagnose)
 
 ## Diagnose Mode
 

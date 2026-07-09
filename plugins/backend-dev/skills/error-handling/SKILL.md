@@ -7,9 +7,7 @@ argument-hint: "<scope: api|service|component> [language]"
 
 # Error Handling
 
-Design error handling for: **$0** scope
-
-Language/framework: **$1** (default: TypeScript)
+Design error handling for the specified scope: **$ARGUMENTS** (language/framework defaults to TypeScript)
 
 ## Steps
 

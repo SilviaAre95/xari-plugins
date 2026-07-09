@@ -7,13 +7,13 @@ argument-hint: "<skill-name> <plugin-name> [description]"
 
 # Create a New Skill
 
-Create a new skill called `$0` in the `$1` plugin.
+Create a new skill from: `$ARGUMENTS` (expected: skill-name, plugin-name, and optionally a description — parse them from the argument string).
 
 ## Instructions
 
-1. Create the directory: `plugins/$1/skills/$0/`
-2. Create `plugins/$1/skills/$0/SKILL.md` using the template below
-3. If a description was provided, use it: `$2`
+1. Create the directory: `plugins/<plugin-name>/skills/<skill-name>/`
+2. Create the `SKILL.md` there using the template below
+3. If a description was provided, use it verbatim in the frontmatter
 
 ## SKILL.md Template
 
@@ -37,9 +37,7 @@ argument-hint: "<placeholder args the user passes, e.g. [target] [options]>"
 
 ## Inputs
 
-- `$ARGUMENTS` — full argument string from the user
-- `$0` — first argument (usually the target)
-- `$1` — second argument (usually an option or modifier)
+- `$ARGUMENTS` — full argument string from the user; parse parameters from it in prose (positional `$0`/`$1` only populate for typed slash commands and leak literally when the model invokes the skill — never use them)
 
 ## Steps
 
@@ -74,7 +72,7 @@ argument-hint: "<placeholder args the user passes, e.g. [target] [options]>"
 ## Tips
 
 - Keep descriptions under 250 characters — they're used for skill matching
-- Use `$ARGUMENTS` for dynamic input; `$0`, `$1` for positional args
+- Use `$ARGUMENTS` for dynamic input — never positional `$0`/`$1` (they only populate for typed slash commands and leak literally on model invocation)
 - Use `disable-model-invocation: true` for destructive or opinionated skills
 - Add a `## Constraints` section to prevent scope creep
 - Reference files with `${CLAUDE_SKILL_DIR}` for co-located templates

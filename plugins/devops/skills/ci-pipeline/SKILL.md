@@ -7,9 +7,7 @@ argument-hint: "<platform: github-actions|railway|vercel|gitlab> [type: build|de
 
 # CI Pipeline
 
-Platform: **$0** (default: github-actions)
-
-Type: **$1** (default: full)
+Generate or review a CI pipeline per: **$ARGUMENTS** (platform defaults to github-actions, pipeline type defaults to full)
 
 ## Steps
 

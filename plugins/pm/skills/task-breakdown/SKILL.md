@@ -7,9 +7,7 @@ argument-hint: "<feature-or-epic> [granularity: high-level|detailed]"
 
 # Task Breakdown
 
-Feature: **$0**
-
-Granularity: **$1** (default: detailed)
+Break down the feature or epic: **$ARGUMENTS** (granularity defaults to detailed)
 
 ## Steps
 

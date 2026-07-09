@@ -7,9 +7,7 @@ argument-hint: "<file-or-directory> [focus: consistency|performance|cleanup]"
 
 # Styling Review
 
-Review styling for: **$0**
-
-Focus: **$1** (default: all)
+Review styling for: **$ARGUMENTS** (focus defaults to all)
 
 ## Steps
 

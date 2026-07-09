@@ -7,9 +7,7 @@ argument-hint: "<component-name> [type: page|layout|ui|form]"
 
 # Component Builder
 
-Build a React component: **$0**
-
-Type: **$1** (default: ui)
+Build a React component: **$ARGUMENTS** (type defaults to ui)
 
 ## Steps
 
