@@ -1,0 +1,8 @@
+# OS cruft
+.DS_Store
+
+# harness loop state (transient — never commit; .cc-dev.yaml/.cc-verify ARE tracked config)
+.cc-loop-*
+.cc-dev-reviews-passed
+.cc-loop-dev-state
+.cc-loop-deploy-state
