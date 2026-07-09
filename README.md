@@ -1,6 +1,8 @@
 # xari-plugins
 
-Opinionated Claude Code plugins for full-stack engineering workflows. 16 plugins, 46 skills, 6 commands, 5 sub-agents, and 5 stack profiles.
+Opinionated Claude Code plugins for full-stack engineering workflows. 15 plugins, 43 skills, 6 commands, 5 sub-agents, and 5 stack profiles.
+
+**Core** (enable everywhere): `shared`, `harness`, `security`, `test-builder`, `feature-bank`. **Extended** (enable per stack): everything else — `/xari-init` picks the right set for a repo.
 
 ## Install
 
@@ -22,8 +24,7 @@ claude plugin install qa@xari-plugins
 claude plugin install data-engineer@xari-plugins
 claude plugin install devops@xari-plugins
 claude plugin install security@xari-plugins
-claude plugin install ui-designer@xari-plugins
-claude plugin install ux-researcher@xari-plugins
+claude plugin install design@xari-plugins
 claude plugin install tech-writer@xari-plugins
 claude plugin install pm@xari-plugins
 claude plugin install harness@xari-plugins
@@ -74,7 +75,7 @@ System design and architecture decisions. Includes `design-reviewer` and `securi
 |-------|-------------|
 | `/system-design` | Design system architecture — components, data flow, infra |
 | `/tradeoff-analysis` | Compare options with structured pros/cons/recommendation |
-| `/adr-writer` | Generate Architecture Decision Records |
+| `/adr-writer` | Write + manage ADRs — generates records, scaffolds docs/adr/, list/status modes |
 
 ### backend-dev
 
@@ -94,7 +95,7 @@ React/Next.js component development and review.
 |-------|-------------|
 | `/component-builder` | Scaffold React components with types, a11y, and Tailwind |
 | `/styling-review` | Review Tailwind usage, design consistency, and patterns |
-| `/accessibility-check` | WCAG 2.1 AA audit — semantic HTML, ARIA, keyboard, contrast |
+| `/accessibility-check` | WCAG 2.1 AA code audit + UX experience mode (screen reader, keyboard, low vision, motor, cognitive) |
 
 ### test-builder
 
@@ -126,25 +127,16 @@ Data pipeline and SQL workflows.
 | `/schema-review` | Review schemas for normalization, indexes, naming |
 | `/sql-optimizer` | Analyze and optimize SQL queries |
 
-### ui-designer
+### design
 
-Layout, design systems, and responsive behavior.
+Design review — layout, design systems, usability, and user flows (merger of the former ui-designer + ux-researcher plugins).
 
 | Skill | Description |
 |-------|-------------|
-| `/layout-review` | Review visual hierarchy, spacing, alignment, responsiveness |
+| `/layout-review` | Visual hierarchy, spacing, alignment + responsive breakpoints and touch targets |
 | `/design-system` | Audit, scaffold, or extend a Tailwind design system |
-| `/responsive-audit` | Audit responsive behavior across breakpoints |
-
-### ux-researcher
-
-Usability evaluation and user experience analysis.
-
-| Skill | Description |
-|-------|-------------|
 | `/heuristic-eval` | Nielsen's 10 heuristics evaluation with severity ratings |
 | `/user-flow-analysis` | Map user flows, identify friction and drop-off risks |
-| `/accessibility-audit` | UX-focused a11y audit beyond compliance checklists |
 
 ### devops
 
@@ -175,7 +167,6 @@ Documentation generation.
 |-------|-------------|
 | `/readme-gen` | Generate README by analyzing project code and config |
 | `/api-docs` | Generate API docs from route handlers (markdown or OpenAPI) |
-| `/adr-template` | Set up ADR infrastructure — directory, template, index |
 
 ### pm
 
@@ -237,7 +228,7 @@ The easiest path is `/xari-init`, which writes this for you. Manually, drop into
 
 Then add the stack-specific set:
 
-- **Full-stack web app**: + `architect`, `backend-dev`, `frontend-dev`, `ui-designer`, `web-tester`
+- **Full-stack web app**: + `architect`, `backend-dev`, `frontend-dev`, `design`, `web-tester`
 - **Backend API service**: + `architect`, `backend-dev`, `data-engineer`, `devops`
 - **Data platform**: + `data-engineer`, `devops`
 - **Infrastructure / Terraform**: + `devops`
@@ -289,8 +280,7 @@ xari-plugins/
 │   ├── test-builder/     # Unit, integration, e2e tests
 │   ├── qa/               # Edge cases, bugs, regressions
 │   ├── data-engineer/    # Pipelines, schemas, SQL
-│   ├── ui-designer/      # Layout, design system, responsive
-│   ├── ux-researcher/    # Heuristics, user flows, a11y audit
+│   ├── design/           # Layout+responsive, design system, heuristics, user flows
 │   ├── devops/           # Docker, CI/CD, infra
 │   ├── security/         # Code audit, deps, IAM
 │   ├── tech-writer/      # README, API docs, ADR templates

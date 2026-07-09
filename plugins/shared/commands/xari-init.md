@@ -23,7 +23,7 @@ Turn the current repo into a xari-configured workspace. Make each change visible
      }
    }
    ```
-   Then add stack-specific plugins: `frontend-dev` + `ui-designer` + `web-tester` for web frontends, `backend-dev` for API/DB code, `data-engineer` for pipelines, `devops` when there is CI/infra config. Ask before enabling anything you are unsure about.
+   Then add stack-specific plugins: `frontend-dev` + `design` + `web-tester` for web frontends, `backend-dev` for API/DB code, `data-engineer` for pipelines, `devops` when there is CI/infra config. Ask before enabling anything you are unsure about.
 
 3. **CLAUDE.md header** — if the repo has no `CLAUDE.md`, create one from this template; if it exists, offer to prepend the missing sections:
    ```markdown

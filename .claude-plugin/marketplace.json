@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Opinionated Claude Code plugins for full-stack engineering workflows",
-    "version": "1.4.0",
+    "version": "2.0.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -14,17 +14,25 @@
       "name": "shared",
       "source": "./plugins/shared",
       "description": "Shared conventions, coding style, and meta-skills",
-      "version": "1.3.0",
+      "version": "1.3.1",
       "category": "conventions",
-      "tags": ["conventions", "style", "meta"]
+      "tags": [
+        "conventions",
+        "style",
+        "meta"
+      ]
     },
     {
       "name": "architect",
       "source": "./plugins/architect",
       "description": "System design, tradeoff analysis, and architecture decision records",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "design",
-      "tags": ["architecture", "system-design", "adr"]
+      "tags": [
+        "architecture",
+        "system-design",
+        "adr"
+      ]
     },
     {
       "name": "backend-dev",
@@ -32,7 +40,11 @@
       "description": "API design, database schemas, and error handling patterns",
       "version": "1.0.0",
       "category": "backend",
-      "tags": ["api", "database", "backend"]
+      "tags": [
+        "api",
+        "database",
+        "backend"
+      ]
     },
     {
       "name": "test-builder",
@@ -40,7 +52,12 @@
       "description": "Unit, integration, and end-to-end test generation",
       "version": "1.0.0",
       "category": "testing",
-      "tags": ["testing", "unit-tests", "integration", "e2e"]
+      "tags": [
+        "testing",
+        "unit-tests",
+        "integration",
+        "e2e"
+      ]
     },
     {
       "name": "data-engineer",
@@ -48,15 +65,25 @@
       "description": "Pipeline design, schema review, and SQL optimization",
       "version": "1.0.0",
       "category": "data",
-      "tags": ["data", "pipelines", "sql", "schema"]
+      "tags": [
+        "data",
+        "pipelines",
+        "sql",
+        "schema"
+      ]
     },
     {
       "name": "frontend-dev",
       "source": "./plugins/frontend-dev",
       "description": "Component building, styling review, and accessibility checks for React/Next.js",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "frontend",
-      "tags": ["frontend", "react", "nextjs", "accessibility"]
+      "tags": [
+        "frontend",
+        "react",
+        "nextjs",
+        "accessibility"
+      ]
     },
     {
       "name": "qa",
@@ -64,23 +91,27 @@
       "description": "Edge case discovery, bug review, and regression checking",
       "version": "1.0.0",
       "category": "quality",
-      "tags": ["qa", "testing", "bugs", "regression"]
+      "tags": [
+        "qa",
+        "testing",
+        "bugs",
+        "regression"
+      ]
     },
     {
-      "name": "ui-designer",
-      "source": "./plugins/ui-designer",
-      "description": "Layout review, design system audits, and responsive checks",
+      "name": "design",
+      "source": "./plugins/design",
+      "description": "Design review — layout + responsive behavior, design systems, usability heuristics, and user flows",
       "version": "1.0.0",
       "category": "design",
-      "tags": ["ui", "design", "layout", "responsive"]
-    },
-    {
-      "name": "ux-researcher",
-      "source": "./plugins/ux-researcher",
-      "description": "Heuristic evaluation, user flow analysis, and accessibility audits",
-      "version": "1.0.0",
-      "category": "research",
-      "tags": ["ux", "research", "usability", "accessibility"]
+      "tags": [
+        "design",
+        "layout",
+        "responsive",
+        "ux",
+        "heuristics",
+        "user-flows"
+      ]
     },
     {
       "name": "devops",
@@ -88,7 +119,12 @@
       "description": "Dockerfiles, CI/CD pipelines, and infrastructure review",
       "version": "1.0.0",
       "category": "infrastructure",
-      "tags": ["devops", "docker", "ci-cd", "infrastructure"]
+      "tags": [
+        "devops",
+        "docker",
+        "ci-cd",
+        "infrastructure"
+      ]
     },
     {
       "name": "security",
@@ -96,15 +132,25 @@
       "description": "Code audits, dependency checks, and IAM reviews",
       "version": "1.0.1",
       "category": "security",
-      "tags": ["security", "audit", "dependencies", "iam"]
+      "tags": [
+        "security",
+        "audit",
+        "dependencies",
+        "iam"
+      ]
     },
     {
       "name": "tech-writer",
       "source": "./plugins/tech-writer",
-      "description": "README generation, API documentation, and ADR templates",
-      "version": "1.0.0",
+      "description": "README generation and API documentation",
+      "version": "2.0.0",
       "category": "documentation",
-      "tags": ["documentation", "readme", "api-docs", "technical-writing"]
+      "tags": [
+        "documentation",
+        "readme",
+        "api-docs",
+        "technical-writing"
+      ]
     },
     {
       "name": "pm",
@@ -112,7 +158,12 @@
       "description": "User stories, task breakdowns, and PRD writing",
       "version": "1.0.0",
       "category": "product",
-      "tags": ["product", "project-management", "user-stories", "prd"]
+      "tags": [
+        "product",
+        "project-management",
+        "user-stories",
+        "prd"
+      ]
     },
     {
       "name": "harness",
@@ -120,15 +171,27 @@
       "description": "Tiered autonomy + build-test-fix, staged dev, and prod deploy loops for hands-off AI workflows",
       "version": "1.1.0",
       "category": "workflow",
-      "tags": ["workflow", "automation", "hooks", "autonomy", "loop"]
+      "tags": [
+        "workflow",
+        "automation",
+        "hooks",
+        "autonomy",
+        "loop"
+      ]
     },
     {
       "name": "feature-bank",
       "source": "./plugins/feature-bank",
       "description": "Source-of-truth feature specs with preflight/postflight gates that stop agent drift",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "workflow",
-      "tags": ["feature-bank", "specs", "drift", "workflow", "governance"]
+      "tags": [
+        "feature-bank",
+        "specs",
+        "drift",
+        "workflow",
+        "governance"
+      ]
     },
     {
       "name": "web-tester",
@@ -136,7 +199,13 @@
       "description": "Live web-app verification — drive real browser flows via Playwright MCP, assert console and network health",
       "version": "1.0.0",
       "category": "testing",
-      "tags": ["testing", "browser", "playwright", "e2e", "devtools"]
+      "tags": [
+        "testing",
+        "browser",
+        "playwright",
+        "e2e",
+        "devtools"
+      ]
     }
   ]
 }

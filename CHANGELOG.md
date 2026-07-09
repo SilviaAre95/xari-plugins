@@ -12,6 +12,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 2.0.0] — 2026-07-09
+
+Consolidation release (context-budget lean-up). **Breaking**: two plugins removed.
+
+### Breaking / Migration
+- **`ui-designer` and `ux-researcher` removed** — merged into the new **`design` `1.0.0`** plugin. Migrate `.claude/settings.json`: replace `ui-designer@xari-plugins` / `ux-researcher@xari-plugins` with `design@xari-plugins`.
+- **`tech-writer` `2.0.0`** — `adr-template` skill removed; its init/list/status modes now live in `architect/adr-writer`.
+
+### Changed
+- **`design` `1.0.0`** — 4 skills: `layout-review` (absorbs `responsive-audit`: mobile-first checks, breakpoint matrix, touch targets), `design-system`, `heuristic-eval`, `user-flow-analysis`.
+- **`frontend-dev` `1.1.0`** — `accessibility-check` gains an `experience` mode (the former `ux-researcher/accessibility-audit`: screen-reader/keyboard/low-vision/motor/cognitive walkthroughs) alongside WCAG code compliance.
+- **`architect` `1.1.0`** — `adr-writer` absorbs ADR infrastructure setup + list/status modes; one ADR skill instead of two.
+- **`feature-bank` `1.1.0`** — SKILL.md trimmed 2,309 → 800 words via progressive disclosure; full backfill flow, spec format, and worked examples moved to `references/` (loaded only when needed). Frontmatter unchanged, so triggering is identical.
+- **`shared` `1.3.1`** — `/xari-init` fleet list references `design` instead of `ui-designer`.
+- README: core vs extended plugin tiers documented. Counts: 15 plugins / 43 skills. Closes XARI-73 (and XARI-54 via the ADR merge).
+
 ## [marketplace 1.4.0] — 2026-07-09
 
 ### Changed

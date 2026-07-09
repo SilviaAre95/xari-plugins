@@ -1,12 +1,16 @@
 {
   "name": "architect",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "System design, tradeoff analysis, and architecture decision records",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
-  "keywords": ["architecture", "system-design", "adr"],
+  "keywords": [
+    "architecture",
+    "system-design",
+    "adr"
+  ],
   "skills": "./skills/"
 }
