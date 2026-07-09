@@ -1,6 +1,6 @@
 # xari-plugins
 
-Opinionated Claude Code plugins for full-stack engineering workflows. 13 plugins, 38 skills, 5 sub-agents, and 4 stack profiles.
+Opinionated Claude Code plugins for full-stack engineering workflows. 16 plugins, 45 skills, 5 commands, 5 sub-agents, and 4 stack profiles.
 
 ## Install
 
@@ -26,7 +26,12 @@ claude plugin install ui-designer@xari-plugins
 claude plugin install ux-researcher@xari-plugins
 claude plugin install tech-writer@xari-plugins
 claude plugin install pm@xari-plugins
+claude plugin install harness@xari-plugins
+claude plugin install feature-bank@xari-plugins
+claude plugin install web-tester@xari-plugins
 ```
+
+Or bootstrap a repo with the whole fleet in one step: install `shared`, then run `/xari-init` inside the repo.
 
 ### Local development
 
@@ -51,6 +56,7 @@ Coding conventions, meta-skills, and stack profiles.
 |-------|-------------|
 | `/conventions` | Apply xari coding style — TypeScript-first, minimal abstractions, conventional commits |
 | `/create-skill` | Generate a new SKILL.md with proper frontmatter and structure |
+| `/xari-init` | Bootstrap a repo as a xari workspace — plugin fleet in `.claude/settings.json`, CLAUDE.md header, harness handoff |
 
 **Stack profiles** (auto-loaded based on project files):
 - `nextjs-vercel` — Next.js App Router + Vercel deployment conventions
@@ -157,6 +163,7 @@ Code and infrastructure security. Includes `vuln-scanner` sub-agent.
 | `/code-audit` | OWASP Top 10 code audit — injection, auth, data exposure |
 | `/dependency-check` | Audit dependencies for CVEs, outdated packages, bloat |
 | `/iam-review` | Review auth flows, RBAC, sessions, API key management |
+| `security-scan` | Supply-chain scan of agent configs (requires external `ecc-agentshield` via npx) |
 
 ### tech-writer
 
@@ -178,74 +185,61 @@ Product management and planning.
 | `/task-breakdown` | Break features into tasks with estimates and dependencies |
 | `/prd-writer` | Generate PRDs with problem, solution, scope, metrics |
 
+### harness
+
+Tiered autonomy + verification loops for hands-off AI workflows. Ships hooks (auto-approve reads, `Stop`-gate loop enforcement), templates, and its own test suite. See [plugins/harness/README.md](plugins/harness/README.md).
+
+| Command | Description |
+|---------|-------------|
+| `/harness-init` | Set up the harness in a project — verify gate (`.cc-verify`), loop configs, gitignore |
+| `/loop-build` | Build-test-fix loop that runs until the verify gate is green |
+| `/loop-dev` | Staged dev loop: spec → plan → build → review/security/bug subagents → fix → PR |
+| `/loop-deploy` | Prod deploy loop: deploy → watch → verify → fix/redeploy until healthy, rollback on exhaustion |
+
+### feature-bank
+
+Source-of-truth feature specs with preflight/postflight gates that stop agent drift.
+
+| Skill | Description |
+|-------|-------------|
+| `/feature-bank` | Enforce `/docs/features/` specs before any code change; interactive backfill for existing codebases |
+
+### web-tester
+
+Live web-app verification. Declares a **Playwright MCP server** (headless, via `npx @playwright/mcp`) so browser tools are available wherever the plugin is installed.
+
+| Skill | Description |
+|-------|-------------|
+| `/web-verify` | Drive the critical user flow in a real browser; assert console + network are clean, screenshot evidence |
+
 ## Per-project setup
 
-### Settings templates
+### Settings template
 
-Drop one of these into your project's `.claude/settings.json`:
+The easiest path is `/xari-init`, which writes this for you. Manually, drop into your project's `.claude/settings.json` (committed, so the whole team gets the same fleet on clone):
 
-**Full-stack web app** (Next.js):
 ```json
 {
-  "plugins": [
-    "shared@xari-plugins",
-    "architect@xari-plugins",
-    "backend-dev@xari-plugins",
-    "frontend-dev@xari-plugins",
-    "test-builder@xari-plugins",
-    "security@xari-plugins"
-  ]
+  "extraKnownMarketplaces": {
+    "xari-plugins": { "source": { "source": "github", "repo": "SilviaAre95/xari-plugins" } }
+  },
+  "enabledPlugins": {
+    "shared@xari-plugins": true,
+    "harness@xari-plugins": true,
+    "security@xari-plugins": true,
+    "test-builder@xari-plugins": true,
+    "feature-bank@xari-plugins": true
+  }
 }
 ```
 
-**Backend API service**:
-```json
-{
-  "plugins": [
-    "shared@xari-plugins",
-    "architect@xari-plugins",
-    "backend-dev@xari-plugins",
-    "test-builder@xari-plugins",
-    "data-engineer@xari-plugins",
-    "devops@xari-plugins",
-    "security@xari-plugins"
-  ]
-}
-```
+Then add the stack-specific set:
 
-**Data platform**:
-```json
-{
-  "plugins": [
-    "shared@xari-plugins",
-    "data-engineer@xari-plugins",
-    "devops@xari-plugins",
-    "security@xari-plugins"
-  ]
-}
-```
-
-**Infrastructure / Terraform**:
-```json
-{
-  "plugins": [
-    "shared@xari-plugins",
-    "devops@xari-plugins",
-    "security@xari-plugins"
-  ]
-}
-```
-
-**Planning & design** (no code):
-```json
-{
-  "plugins": [
-    "architect@xari-plugins",
-    "pm@xari-plugins",
-    "tech-writer@xari-plugins"
-  ]
-}
-```
+- **Full-stack web app**: + `architect`, `backend-dev`, `frontend-dev`, `ui-designer`, `web-tester`
+- **Backend API service**: + `architect`, `backend-dev`, `data-engineer`, `devops`
+- **Data platform**: + `data-engineer`, `devops`
+- **Infrastructure / Terraform**: + `devops`
+- **Planning & design** (no code): `architect`, `pm`, `tech-writer` only
 
 ### Install with scope
 
@@ -298,13 +292,18 @@ xari-plugins/
 │   ├── devops/           # Docker, CI/CD, infra
 │   ├── security/         # Code audit, deps, IAM
 │   ├── tech-writer/      # README, API docs, ADR templates
-│   └── pm/               # User stories, tasks, PRDs
+│   ├── pm/               # User stories, tasks, PRDs
+│   ├── harness/          # Autonomy tiers, verify loops, hooks, templates, tests
+│   ├── feature-bank/     # Feature-spec governance + check-bank.sh validator
+│   └── web-tester/       # Live browser verification, Playwright MCP
 │       ├── .claude-plugin/
 │       │   └── plugin.json
-│       ├── skills/
+│       ├── skills/         # (or commands/ for harness + shared)
 │       │   └── <skill-name>/
 │       │       └── SKILL.md
 │       └── agents/         # (plugins with sub-agents)
 │           └── <agent-name>.md
+├── CHANGELOG.md
+├── CLAUDE.md             # Release rule: version bump + CHANGELOG on any plugins/ change
 └── README.md
 ```
