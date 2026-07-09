@@ -1,6 +1,6 @@
 # xari-plugins
 
-Opinionated Claude Code plugins for full-stack engineering workflows. 16 plugins, 45 skills, 5 commands, 5 sub-agents, and 4 stack profiles.
+Opinionated Claude Code plugins for full-stack engineering workflows. 16 plugins, 45 skills, 6 commands, 5 sub-agents, and 4 stack profiles.
 
 ## Install
 
@@ -57,6 +57,7 @@ Coding conventions, meta-skills, and stack profiles.
 | `/conventions` | Apply xari coding style — TypeScript-first, minimal abstractions, conventional commits |
 | `/create-skill` | Generate a new SKILL.md with proper frontmatter and structure |
 | `/xari-init` | Bootstrap a repo as a xari workspace — plugin fleet in `.claude/settings.json`, CLAUDE.md header, harness handoff |
+| `/xari-onboard` | Onboard a project from any starting point — create + link Linear project ↔ vault note ↔ repo, adapting to what exists |
 
 **Stack profiles** (auto-loaded based on project files):
 - `nextjs-vercel` — Next.js App Router + Vercel deployment conventions
