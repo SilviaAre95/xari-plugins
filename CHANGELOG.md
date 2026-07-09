@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 2.0.1] — 2026-07-09
+
+### Fixed
+- **All skills standardized on `$ARGUMENTS`** — 24 skills across 10 plugins dropped positional `$0`/`$1` interpolation (which only populates for typed slash commands and leaks literally when the model invokes a skill). `shared/create-skill` `1.3.2` now teaches `$ARGUMENTS`-only. Patch bumps: backend-dev/data-engineer/design/devops/pm/qa/test-builder 1.0.1, frontend-dev 1.1.1, security 1.0.2, tech-writer 2.0.1.
+
 ## [marketplace 2.0.0] — 2026-07-09
 
 Consolidation release (context-budget lean-up). **Breaking**: two plugins removed.

@@ -7,9 +7,7 @@ argument-hint: "<app-type: node|python|go|rust> [mode: create|review]"
 
 # Dockerfile
 
-App type: **$0**
-
-Mode: **$1** (default: create)
+Generate or review a Dockerfile for the app type in: **$ARGUMENTS** (mode defaults to create)
 
 ## Create Mode
 

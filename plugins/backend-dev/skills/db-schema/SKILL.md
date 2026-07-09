@@ -7,9 +7,7 @@ argument-hint: "<feature-or-model> [review|create]"
 
 # Database Schema Design
 
-Design or review the database schema for: **$0**
-
-Mode: **$1** (default: create)
+Design or review the database schema for: **$ARGUMENTS** (mode defaults to create)
 
 ## Steps
 

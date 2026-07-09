@@ -7,9 +7,7 @@ argument-hint: "<page-or-flow> [heuristics: all|visibility|feedback|consistency|
 
 # Heuristic Evaluation
 
-Evaluate: **$0**
-
-Focus: **$1** (default: all)
+Evaluate: **$ARGUMENTS** (heuristics focus defaults to all)
 
 ## Nielsen's 10 Heuristics
 

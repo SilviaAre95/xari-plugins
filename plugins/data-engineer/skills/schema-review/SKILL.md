@@ -7,9 +7,7 @@ argument-hint: "<schema-file-or-table> [check: all|naming|indexes|normalization]
 
 # Schema Review
 
-Review the schema for: **$0**
-
-Focus area: **$1** (default: all)
+Review the schema for: **$ARGUMENTS** (focus area defaults to all)
 
 ## Steps
 

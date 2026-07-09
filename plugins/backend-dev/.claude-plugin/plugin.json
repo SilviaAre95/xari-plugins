@@ -1,12 +1,16 @@
 {
   "name": "backend-dev",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "API design, database schemas, and error handling patterns",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
-  "keywords": ["api", "database", "backend"],
+  "keywords": [
+    "api",
+    "database",
+    "backend"
+  ],
   "skills": "./skills/"
 }

@@ -7,9 +7,7 @@ argument-hint: "<file-or-function> [scope: inputs|state|concurrency|all]"
 
 # Edge Case Finder
 
-Find edge cases in: **$0**
-
-Scope: **$1** (default: all)
+Find edge cases in: **$ARGUMENTS** (scope defaults to all)
 
 ## Steps
 
@@ -41,7 +39,7 @@ Scope: **$1** (default: all)
 5. **Analyze business logic boundaries**:
    - Off-by-one in pagination, date ranges, loops
    - Timezone handling (UTC vs local, DST boundaries)
-   - Currency rounding ($0.005 → $0.00 or $0.01?)
+   - Currency rounding (0.005 → 0.00 or 0.01?)
    - Locale differences (decimal separator, date format)
    - Permission boundaries (user A accessing user B's data)
 

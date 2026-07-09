@@ -7,7 +7,7 @@ argument-hint: "[style: minimal|standard|detailed]"
 
 # README Generator
 
-Style: **$0** (default: standard)
+Generate the README in the requested style: **$ARGUMENTS** (defaults to standard)
 
 ## Steps
 

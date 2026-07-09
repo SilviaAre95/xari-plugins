@@ -7,9 +7,7 @@ argument-hint: "<user-flow> [framework: playwright|cypress]"
 
 # E2E Test Generator
 
-Generate end-to-end tests for: **$0**
-
-Framework: **$1** (default: playwright)
+Generate end-to-end tests for: **$ARGUMENTS** (framework defaults to playwright)
 
 ## Steps
 

@@ -1,12 +1,17 @@
 {
   "name": "devops",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Dockerfiles, CI/CD pipelines, and infrastructure review",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
-  "keywords": ["devops", "docker", "ci-cd", "infrastructure"],
+  "keywords": [
+    "devops",
+    "docker",
+    "ci-cd",
+    "infrastructure"
+  ],
   "skills": "./skills/"
 }

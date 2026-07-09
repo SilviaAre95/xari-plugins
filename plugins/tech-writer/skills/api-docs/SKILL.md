@@ -7,9 +7,7 @@ argument-hint: "<api-directory-or-file> [format: markdown|openapi]"
 
 # API Documentation Generator
 
-Target: **$0**
-
-Format: **$1** (default: markdown)
+Generate API docs for: **$ARGUMENTS** (format defaults to markdown)
 
 ## Steps
 

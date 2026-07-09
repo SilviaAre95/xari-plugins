@@ -7,9 +7,7 @@ argument-hint: "<file-or-function> [framework: vitest|jest]"
 
 # Unit Test Generator
 
-Generate unit tests for: **$0**
-
-Framework: **$1** (default: vitest)
+Generate unit tests for: **$ARGUMENTS** (framework defaults to vitest)
 
 ## Steps
 

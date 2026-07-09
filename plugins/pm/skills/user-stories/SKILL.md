@@ -7,9 +7,7 @@ argument-hint: "<feature-description> [format: standard|gherkin]"
 
 # User Story Generator
 
-Feature: **$0**
-
-Format: **$1** (default: standard)
+Write user stories for the feature: **$ARGUMENTS** (format defaults to standard)
 
 ## Steps
 

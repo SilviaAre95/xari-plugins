@@ -7,9 +7,7 @@ argument-hint: "<file-or-directory> [focus: auth|injection|data|all]"
 
 # Security Code Audit
 
-Audit: **$0**
-
-Focus: **$1** (default: all)
+Audit: **$ARGUMENTS** (focus defaults to all)
 
 ## Steps
 

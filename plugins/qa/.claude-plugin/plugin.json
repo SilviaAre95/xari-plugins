@@ -1,12 +1,17 @@
 {
   "name": "qa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Edge case discovery, bug review, and regression checking",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/xari-plugins",
   "license": "MIT",
-  "keywords": ["qa", "testing", "bugs", "regression"],
+  "keywords": [
+    "qa",
+    "testing",
+    "bugs",
+    "regression"
+  ],
   "skills": "./skills/"
 }

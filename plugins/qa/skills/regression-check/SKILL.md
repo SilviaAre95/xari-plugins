@@ -7,9 +7,7 @@ argument-hint: "<file-or-pr> [depth: shallow|deep]"
 
 # Regression Check
 
-Check for regressions in: **$0**
-
-Depth: **$1** (default: deep)
+Check for regressions in: **$ARGUMENTS** (depth defaults to deep)
 
 ## Steps
 
