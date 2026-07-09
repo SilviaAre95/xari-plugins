@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 1.3.1] — 2026-07-09
+
+### Fixed
+- **`security` `1.0.1`** — `security-scan` frontmatter normalized to house standard (quoted description, `user-invocable`, `argument-hint`; non-standard `origin` key removed) and its external `ecc-agentshield` dependency surfaced explicitly: not bundled, `npx` downloads on first run, fail-and-report if unavailable, version-pinning advised for CI. Closes XARI-52.
+
 ## [marketplace 1.3.0] — 2026-07-09
 
 ### Added
