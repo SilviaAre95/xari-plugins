@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 1.4.0] — 2026-07-09
+
+### Changed
+- **`shared` `1.3.0`** — `conventions` is now language-agnostic (simplicity-first, error handling, commits, review checklist); TypeScript/React/Tailwind/Prisma specifics moved into the `nextjs-vercel` stack profile where they auto-load only in matching repos. New `expo-mobile` stack profile (Expo Router, secure storage, permissions, EAS) — mobile conventions no longer squat in a web profile. Closes XARI-72.
+
 ## [marketplace 1.3.1] — 2026-07-09
 
 ### Fixed

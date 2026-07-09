@@ -47,6 +47,16 @@ prisma/
 - Error UI: `error.tsx` for error boundaries
 - Middleware: `middleware.ts` at project root for auth/redirects
 
+## TypeScript & Code Style
+
+- Strict TypeScript everywhere — no `any` unless truly unavoidable (document why)
+- Prefer `const` over `let`, never `var`; named exports over default exports
+- Early returns to reduce nesting
+- Zod for runtime validation at system boundaries; React Hook Form + Zod for forms
+- No barrel files (`index.ts` re-exports) unless the package explicitly needs a public API
+- Tailwind CSS for styling — no CSS modules, no styled-components
+- Colocate single-use components with their route; shared components in `src/components/`
+
 ## Vercel-Specific
 
 - Environment variables: set in Vercel dashboard, not `.env` in production
