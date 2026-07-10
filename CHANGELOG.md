@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 3.2.0] — 2026-07-10
+
+### Changed
+- **`harness` `1.2.0`** — `/harness-init` now **detects the deploy target** instead of defaulting to Vercel. It writes a Railway config when it sees `railway.json`/`railway.toml`, a Vercel config when it sees `vercel.json`/`.vercel/`, and otherwise a neutral default whose `deploy`/`verify`/`rollback` commands are guarded to exit non-zero until filled in — so an unconfigured deploy loop refuses to run rather than silently "succeeding". Adds `templates/.cc-deploy.railway.yaml` and `templates/.cc-deploy.vercel.yaml`; the generic `templates/.cc-deploy.yaml` is now the provider-neutral fallback.
+
 ## [marketplace 3.1.0] — 2026-07-10
 
 Open-source readiness release.

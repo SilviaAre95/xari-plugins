@@ -1,8 +1,17 @@
 # /loop-deploy config. Committed per-project.
-deploy: "vercel deploy --prod"     # command that deploys (the agent runs it once per attempt)
-watch: "vercel inspect --wait"     # blocks until the deploy resolves
-# verify: a single command that is 0 iff prod is healthy — compose health + smoke + error-rate:
-verify: "curl -fsS https://app.example.com/health >/dev/null && npm run smoke:prod && npm run check:error-rate"
-rollback: "vercel rollback"        # run when max_redeploys is exceeded — never leave prod broken
+#
+# harness-init did NOT detect a known deploy target (no railway.json / vercel.json / .vercel).
+# Replace each command below for wherever THIS repo actually deploys, then remove the exit-1 guards.
+# The guards make the loop refuse to run rather than silently "succeed" on an unconfigured deploy.
+#
+# Provider starting points ship with the harness plugin — copy whichever matches your host:
+#   templates/.cc-deploy.railway.yaml
+#   templates/.cc-deploy.vercel.yaml
+
+deploy: "echo 'configure deploy: in .cc-deploy.yaml' >&2; exit 1"     # the agent runs this once per attempt
+watch: "true"                                                         # replace: block until the deploy resolves
+# verify: a single command that exits 0 IFF prod is healthy — compose health + smoke + error-rate.
+verify: "echo 'configure verify: in .cc-deploy.yaml' >&2; exit 1"
+rollback: "echo 'configure rollback: in .cc-deploy.yaml' >&2; exit 1" # never leave prod broken
 max_redeploys: 3
 migrations_gate: true              # a DB migration deploy needs a SECOND explicit approval

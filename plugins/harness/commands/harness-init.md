@@ -28,7 +28,12 @@ Set up the harness in the current project. Make each change visible and ask befo
 
 3. **Dev loop config** — if `.cc-dev.yaml` does not exist at the project root, copy it from the plugin's `templates/.cc-dev.yaml`. This is committed config (like `.cc-verify`) — do NOT add it to `.gitignore`.
 
-4. **Deploy loop config** — if `.cc-deploy.yaml` does not exist at the project root, copy it from the plugin's `templates/.cc-deploy.yaml`. This is committed config (like `.cc-verify`) — do NOT add it to `.gitignore`.
+4. **Deploy loop config** — if `.cc-deploy.yaml` does not exist at the project root, generate it by **detecting where this repo deploys**, then confirm the detected target with the user before writing:
+   - **Railway** — `railway.json`, `railway.toml`, or a linked Railway project present → copy `templates/.cc-deploy.railway.yaml`.
+   - **Vercel** — `vercel.json` or a `.vercel/` directory present → copy `templates/.cc-deploy.vercel.yaml`.
+   - **Neither detected** → copy the neutral `templates/.cc-deploy.yaml`. Its `deploy`/`verify`/`rollback` commands are guarded placeholders that exit non-zero on purpose, so the loop refuses to run until the user fills them in. Tell the user the deploy loop cannot run until they set these for wherever the repo actually deploys.
+
+   Whichever variant you copy, land it as `.cc-deploy.yaml` at the project root and replace its example domain/commands with the project's real ones where you can infer them. This is committed config (like `.cc-verify`) — do NOT add it to `.gitignore`.
 
 5. **Project allow list** — merge the `permissions.allow` block from the harness permission policy into this project's `.claude/settings.json` (create the file if absent). Do NOT duplicate entries already present. The canonical block is:
    ```json
