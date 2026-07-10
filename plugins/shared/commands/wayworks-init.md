@@ -49,4 +49,5 @@ Turn the current repo into a wayworks-configured workspace. Make each change vis
 
 - Merge JSON with existing content — replacing `.claude/settings.json` wholesale is forbidden.
 - Declare only stable, unguessable facts in CLAUDE.md (pointers, commands, constraints). Do not inventory code structure — it rots.
+- **Branch discipline**: check `git branch --show-current` before committing. If the repo has a remote, commit on a `chore/wayworks-init` branch from the default branch and open a PR; without a remote, commit to the default branch. If the repo is mid-feature or dirty, say so and let the user choose.
 - Report a final summary table: file → created/updated/skipped.

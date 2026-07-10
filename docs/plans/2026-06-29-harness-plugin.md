@@ -600,9 +600,9 @@ Manual: launch `claude`, run `/permissions`, confirm the deny/ask/allow rules ap
 ### Task 8: Seed crema-connect + end-to-end loop test
 
 **Files:**
-- Modify: `/Users/silviaxari/ventures/code/crema-connect/.claude/settings.json`
-- Create: `/Users/silviaxari/ventures/code/crema-connect/.cc-verify`
-- Modify: `/Users/silviaxari/ventures/code/crema-connect/.gitignore`
+- Modify: `~/ventures/code/crema-connect/.claude/settings.json`
+- Create: `~/ventures/code/crema-connect/.cc-verify`
+- Modify: `~/ventures/code/crema-connect/.gitignore`
 
 - [ ] **Step 1: Run `/harness-init` in crema-connect**
 
@@ -619,7 +619,7 @@ Manual: fix the failure, confirm the loop reaches green, removes `.cc-loop-activ
 - [ ] **Step 4: Commit crema-connect changes**
 
 ```bash
-cd /Users/silviaxari/ventures/code/crema-connect
+cd ~/ventures/code/crema-connect
 git add .claude/settings.json .gitignore
 git commit -m "chore: adopt harness — seed permission allow list and verify gate"
 ```

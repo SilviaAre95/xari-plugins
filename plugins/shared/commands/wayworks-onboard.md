@@ -26,14 +26,15 @@ The goal state is a linked triangle: **Linear project ↔ vault note ↔ repo**.
 
 ## Adapt to the user's setup
 
-This command must work for any user, not one specific workflow. Detect capabilities and degrade gracefully:
-- **No vault** (global CLAUDE.md declares none): skip the vault vertex; put the Goal/Context content in the repo's `docs/` or the Linear project description instead.
-- **No Linear MCP** (ToolSearch finds no Linear tools): skip that vertex and suggest the user's tracker of choice; a `docs/BACKLOG.md` is an acceptable substitute.
+This command must work for any user, not one specific workflow. The second brain (Obsidian vault) is the recommended knowledge core; the tracker is pluggable. Detect capabilities and degrade gracefully:
+- **No Linear MCP** (ToolSearch finds no Linear tools): the tracker vertex is pluggable — ask which the user prefers, recommending in this order: (1) **Obsidian issue management**: a `## Backlog` section in the project's vault note (or a `<project>-backlog.md` beside it) using `- [ ]` checkboxes, so tasks live in the second brain; (2) another connected tracker (GitHub Issues via `gh`, or any tracker MCP ToolSearch finds); (3) `docs/BACKLOG.md` in the repo as the minimal fallback. Wire the triangle links to whichever is chosen.
+- **No vault** (global CLAUDE.md declares none): skip the vault vertex; put the Goal/Context content in the repo's `docs/` or the tracker's project description instead. Suggest an Obsidian vault as the recommended knowledge layer, but never require it.
 - **Different vault structure**: read the vault's own entry-point file (root CLAUDE.md / agent context) and follow ITS template and folder conventions rather than assuming `02-Projects/` + `_templates/`.
 
 ## Constraints
 
-- Ask before creating the Linear project (external, workspace-visible) — show the name + description you intend to write.
-- Committed repo files get relative vault-note names only; absolute personal paths stay in the vault and Linear.
-- Never overwrite an existing vault note or Linear description — merge missing pointer lines only.
-- Idea-stage projects get vault note + Linear only; do not scaffold empty repos nobody asked for.
+- Ask before creating the tracker project (external, workspace-visible) — show the name + description you intend to write.
+- **Branch discipline for repo commits**: never commit config onto whatever branch the repo happens to be on. Check `git branch --show-current` first. If the repo has a remote, create `chore/wayworks-onboard` from the default branch, commit there, push, and open a PR. If there is no remote, commit to the default branch directly. If the working tree is dirty or mid-feature, say so and let the user choose.
+- Committed repo files get relative vault-note names only; absolute personal paths stay in the vault and tracker.
+- Never overwrite an existing vault note or tracker description — merge missing pointer lines only.
+- Idea-stage projects get vault note + tracker only; do not scaffold empty repos nobody asked for.
