@@ -1,9 +1,9 @@
 ---
-description: Bootstrap this repo as a xari workspace — plugin fleet, CLAUDE.md header, harness handoff
+description: Bootstrap this repo as a wayworks workspace — plugin fleet, CLAUDE.md header, harness handoff
 allowed-tools: Read, Edit, Write, Bash(cat:*), Bash(ls:*), Bash(jq:*)
 ---
 
-Turn the current repo into a xari-configured workspace. Make each change visible, merge with existing files, and never overwrite without asking.
+Turn the current repo into a wayworks-configured workspace. Make each change visible, merge with existing files, and never overwrite without asking.
 
 1. **Detect the stack** — read `package.json`, `pyproject.toml`, `go.mod`, lockfiles, and framework configs. Summarize the detected stack in one line and confirm with the user.
 
@@ -11,14 +11,14 @@ Turn the current repo into a xari-configured workspace. Make each change visible
    ```json
    {
      "extraKnownMarketplaces": {
-       "xari-plugins": { "source": { "source": "github", "repo": "SilviaAre95/xari-plugins" } }
+       "wayworks": { "source": { "source": "github", "repo": "SilviaAre95/wayworks" } }
      },
      "enabledPlugins": {
-       "shared@xari-plugins": true,
-       "harness@xari-plugins": true,
-       "security@xari-plugins": true,
-       "test-builder@xari-plugins": true,
-       "feature-bank@xari-plugins": true,
+       "shared@wayworks": true,
+       "harness@wayworks": true,
+       "security@wayworks": true,
+       "test-builder@wayworks": true,
+       "feature-bank@wayworks": true,
        "superpowers@claude-plugins-official": true
      }
    }
@@ -31,7 +31,7 @@ Turn the current repo into a xari-configured workspace. Make each change visible
 
    <one-line purpose>
 
-   ## Xari config
+   ## Wayworks config
    - **Stack**: <detected stack, one line>
    - **Vault note**: <e.g. 02-Projects/<repo>.md — relative name only>
    - **Linear project**: <project name or "none">

@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- Build in **xari-plugins on branch `feat/work-loop-system`**. Commit there.
+- Build in **wayworks on branch `feat/work-loop-system`**. Commit there.
 - Match harness hook conventions: bash + jq, `{decision:"block",reason}` to block a stop, `exit 0` with no output to allow it. Command frontmatter: `description` / `argument-hint` / `allowed-tools`.
 - New state files (git-ignored, distinct from loop-build/loop-dev): sentinel `.cc-deploy-active`, counter `.cc-deploy-state`, log `.cc-deploy.log`. Config (committed): `.cc-deploy.yaml`.
 - Default `max_redeploys: 3`. `CC_DEPLOY_VERIFY_CMD` env overrides the verify command (for tests); `CC_DEPLOY_ROLLBACK_CMD` overrides rollback (for tests).

@@ -12,6 +12,17 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 3.0.0] — 2026-07-10
+
+**The project is now `wayworks`** (was `xari-plugins`) — an open-source way of work for AI-assisted building: plugins + second-brain (Obsidian) support + tracker (Linear) integration.
+
+### Breaking / Migration
+- Marketplace renamed: every consumer key changes from `<plugin>@xari-plugins` to `<plugin>@wayworks`, and the marketplace source is now `SilviaAre95/wayworks` (old GitHub URLs redirect). Update `.claude/settings.json`: `extraKnownMarketplaces` entry + all `enabledPlugins` keys.
+- **`shared` `2.0.0`** — commands renamed: `/xari-init` → `/wayworks-init`, `/xari-onboard` → `/wayworks-onboard`. The CLAUDE.md header they scaffold is now `## Wayworks config`.
+
+### Changed
+- All plugin `repository` URLs, README, and docs updated to the new identity. Historical CHANGELOG entries below intentionally keep the old name.
+
 ## [marketplace 2.0.1] — 2026-07-09
 
 ### Fixed

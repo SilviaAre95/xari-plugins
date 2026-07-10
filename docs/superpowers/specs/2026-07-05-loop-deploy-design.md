@@ -3,7 +3,7 @@ type: spec
 status: draft
 created: 2026-07-05
 topic: loop-deploy
-implementation_target: xari-plugins/plugins/harness
+implementation_target: wayworks/plugins/harness
 part_of: xari-work-loop-system (3 of 3)
 ---
 

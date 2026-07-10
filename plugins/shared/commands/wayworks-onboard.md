@@ -20,7 +20,7 @@ The goal state is a linked triangle: **Linear project ↔ vault note ↔ repo**.
 3. **Wire the links** (idempotent — fix stale links on projects that already have all three):
    - Vault note frontmatter/Resources: repo path + Linear project URL.
    - Linear project description: `Vault note:` + `Local repo:` lines (update if present but wrong).
-   - Repo: run `/xari-init` (plugin fleet + CLAUDE.md header with the vault-note name and Linear project name).
+   - Repo: run `/wayworks-init` (plugin fleet + CLAUDE.md header with the vault-note name and Linear project name).
 
 4. **Report** — table of the triangle: each vertex → existed / created / skipped, plus the links written.
 

@@ -45,7 +45,7 @@ Config — `deploy`, `watch`, `verify`, `rollback`, `max_redeploys`,
 
 ## Setup
 
-1. Enable the plugin (it's in the `xari-plugins` marketplace).
+1. Enable the plugin (it's in the `wayworks` marketplace).
 2. Run `/harness-init` in each project to create `.cc-verify`, git-ignore loop
    state, scaffold `.cc-dev.yaml` and `.cc-deploy.yaml`, and seed the project
    allow list.

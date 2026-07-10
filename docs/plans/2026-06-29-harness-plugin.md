@@ -13,7 +13,7 @@
 - Public-safe: no secrets, no machine-specific absolute paths in committed files. README/command examples are generic.
 - Hook scripts must be POSIX bash, executable (`chmod +x`), and reference themselves via `${CLAUDE_PLUGIN_ROOT}`.
 - `jq` is an assumed dependency (already in the user's toolset).
-- Plugin name: `harness`. Marketplace owner/author: `Silvia Arellano`. Repo: `https://github.com/SilviaAre95/xari-plugins`. License: `MIT`. Version: `1.0.0`.
+- Plugin name: `harness`. Marketplace owner/author: `Silvia Arellano`. Repo: `https://github.com/SilviaAre95/wayworks`. License: `MIT`. Version: `1.0.0`.
 - Permission precedence is `deny` > `ask` > `allow`. The floor (`deny`) applies in every tier including `bypassPermissions`.
 - State files (git-ignored, per project): `.cc-loop-active` (sentinel), `.cc-loop-state` (attempt counter), `.cc-verify` (optional gate override). Default gate: `npm run lint && npm run build && npm test`.
 - Circuit breaker: `MAX=5` attempts.
@@ -59,7 +59,7 @@ docs/reference/permission-policy.md   # canonical floor/allow/ask block (sourced
   "author": {
     "name": "Silvia Arellano"
   },
-  "repository": "https://github.com/SilviaAre95/xari-plugins",
+  "repository": "https://github.com/SilviaAre95/wayworks",
   "license": "MIT",
   "keywords": ["workflow", "automation", "hooks", "autonomy", "loop"],
   "commands": "./commands/",
@@ -470,7 +470,7 @@ Set up the harness in the current project. Make each change visible and ask befo
    ```
    Add project-specific deploy-tool reads (e.g. `Bash(railway status*)`) only if that tooling is present.
 
-4. **Remind the user** that the universal floor (`deny`) and hard gates (`ask`) belong in `~/.claude/settings.json` (global), not the project — point them to `docs/reference/permission-policy.md` in the xari-plugins repo, and note that this command intentionally does not edit global settings.
+4. **Remind the user** that the universal floor (`deny`) and hard gates (`ask`) belong in `~/.claude/settings.json` (global), not the project — point them to `docs/reference/permission-policy.md` in the wayworks repo, and note that this command intentionally does not edit global settings.
 
 Report a summary of exactly which files you changed.
 ````
@@ -524,7 +524,7 @@ Read-only tools are auto-approved in every tier so exploration never stalls.
 
 ## Setup
 
-1. Enable the plugin (it's in the `xari-plugins` marketplace).
+1. Enable the plugin (it's in the `wayworks` marketplace).
 2. Run `/harness-init` in each project to create `.cc-verify`, git-ignore loop
    state, and seed the project allow list.
 3. Add the **permission policy** to your settings — a plugin cannot grant
