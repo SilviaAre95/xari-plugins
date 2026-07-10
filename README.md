@@ -7,6 +7,25 @@ An open-source way of work for AI-assisted building — Claude Code plugins with
 
 **Core** (enable everywhere): `shared`, `harness`, `security`, `test-builder`, `feature-bank`. **Extended** (enable per stack): everything else — `/wayworks-init` picks the right set for a repo.
 
+## How it's used
+
+**One-time setup**
+1. Install the marketplace and the core plugins (below), or let `/wayworks-init` do it per repo.
+2. *Recommended*: point your global `~/.claude/CLAUDE.md` at your Obsidian vault (one line: where it lives and that repo CLAUDE.md files reference notes inside it). The vault is the knowledge layer — project notes, PRDs, decisions — and what `/wayworks-onboard` links against.
+3. *Optional*: connect a tracker. Linear (via the claude.ai connector) gets the deepest integration; GitHub Issues or a backlog inside your vault work too — the commands adapt to what you have.
+
+**Per project**
+- `/wayworks-onboard <name-or-idea>` — takes inventory (repo? vault note? tracker project?), creates only what's missing, and wires the links between all three. Works from a bare idea (vault note + tracker only) up to a fully existing project (links only).
+- `/wayworks-init` — inside a repo: detects the stack, enables the right plugin fleet in committed `.claude/settings.json` (so your whole team gets it on clone), scaffolds the CLAUDE.md config header, and hands off to `/harness-init` for the verify gate.
+
+**Daily**
+- `/loop-build` — build-test-fix until the verify gate is green
+- `/loop-dev` — full feature loop: spec → plan → build → review/security/bug subagents → PR
+- `/loop-deploy` — deploy → watch → verify prod → fix/redeploy or roll back
+- `feature-bank` guards scope on every code edit; review/test/security skills on demand; `/web-verify` drives your live app in a real browser.
+
+**Adapts to your setup**: no vault → knowledge lives in `docs/`; no Linear → pick Obsidian checkboxes, GitHub Issues, or `docs/BACKLOG.md`. Obsidian + Linear is the recommended pairing, not a requirement.
+
 ## Install
 
 ### From GitHub (marketplace)

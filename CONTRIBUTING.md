@@ -1,0 +1,31 @@
+# Contributing to wayworks
+
+Thanks for considering a contribution. wayworks is an opinionated way of work — contributions that sharpen the opinions are welcome; contributions that dilute them into a neutral toolkit will be declined kindly.
+
+## Philosophy
+
+- **Conventions-first, minimal abstractions.** Skills encode opinions and workflows, not knowledge the model already has (no language tutorials).
+- **Skills are small.** House pattern: frontmatter (`name`, quoted `description`, `user-invocable`, `argument-hint`) → `Steps → Output Format → Constraints`, ~300–450 words. Anything bigger uses progressive disclosure (`references/` files loaded on demand).
+- **`$ARGUMENTS` only** — never positional `$0`/`$1` (they leak literally when a skill is model-invoked).
+- **Portable by default.** No hardcoded personal paths, no undeclared external dependencies, no assumptions about which tracker or vault the user has.
+
+## Scaffolding a new skill
+
+Use the meta-skill: `/create-skill <skill-name> <plugin-name> "<description>"` — it generates the correct frontmatter and structure. New plugins enter at `1.0.0` with a `.claude-plugin/plugin.json` matching the existing ones.
+
+## The release rule (CI-enforced)
+
+Any PR touching `plugins/` or `.claude-plugin/` must include, in the same PR:
+
+1. A **version bump** in the plugin's `plugin.json` **and** its `marketplace.json` entry (kept in sync; semver policy at the top of `CHANGELOG.md`).
+2. A **marketplace bump** (`metadata.version`) when the plugin set changes or the release is notable.
+3. A **CHANGELOG entry** (Keep-a-Changelog format, newest first).
+4. Updated **README counts/tables** if the number of plugins/skills/commands changed.
+
+CI validates manifests (JSON, name+version sync both ways, hook script paths), runs the harness shell tests, and fails PRs that change `plugins/` without a CHANGELOG + version bump. Run the tests locally with `bash plugins/harness/test/*.test.sh`.
+
+## PR expectations
+
+- One logical change per PR; conventional commit titles (`feat:`, `fix:`, `docs:`, `refactor:`, `chore:`; `!` for breaking).
+- Breaking changes (removed plugins/commands, renamed keys) need a **Migration** section in the CHANGELOG entry.
+- If your skill shells out to anything external, declare it prominently in the skill and README, and make the skill fail honestly when the dependency is missing.

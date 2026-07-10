@@ -12,6 +12,18 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 3.1.0] — 2026-07-10
+
+Open-source readiness release.
+
+### Added
+- **CONTRIBUTING.md** — philosophy, skill scaffolding, the CI-enforced release rule, PR expectations.
+- **README "How it's used"** — one-time setup, per-project bootstrap/onboarding, daily loops, and the adaptability story.
+
+### Changed
+- **`shared` `2.1.0`** — `/wayworks-onboard`: the tracker vertex is now explicitly pluggable (recommended order: Obsidian backlog in the vault note → any connected tracker/GitHub Issues → `docs/BACKLOG.md`); Obsidian stays the recommended knowledge core but is never required. Both `/wayworks-onboard` and `/wayworks-init` gain **branch discipline**: config commits go to a `chore/` branch + PR when a remote exists, never onto whatever feature branch the repo happens to be on.
+- Historical design doc sanitized of absolute personal paths.
+
 ## [marketplace 3.0.0] — 2026-07-10
 
 **The project is now `wayworks`** (was `xari-plugins`) — an open-source way of work for AI-assisted building: plugins + second-brain (Obsidian) support + tracker (Linear) integration.
