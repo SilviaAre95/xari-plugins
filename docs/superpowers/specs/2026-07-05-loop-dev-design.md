@@ -3,7 +3,7 @@ type: spec
 status: draft
 created: 2026-07-05
 topic: loop-dev
-implementation_target: xari-plugins/plugins/harness
+implementation_target: wayworks/plugins/harness
 part_of: xari-work-loop-system (2 of 3)
 ---
 
@@ -21,7 +21,7 @@ It lives in `harness` (reusable across all repos), builds on `/loop-build`'s hoo
 
 1. A `/loop-dev <task>` command that runs the full staged gate and loops until every grader is green, then opens a PR.
 2. Reuse harness primitives: tiers, `.cc-verify`, the Stop-hook loop, read-only auto-approve.
-3. Graders map to existing xari-plugins skills/agents — no new review logic invented.
+3. Graders map to existing wayworks skills/agents — no new review logic invented.
 4. Human oversight at the sensitive gate: **PR/push is a hard Approve/Deny** (ties to Ristretto's approval-loop).
 
 ## Non-goals

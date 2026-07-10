@@ -41,6 +41,6 @@ Set up the harness in the current project. Make each change visible and ask befo
    ```
    Add project-specific deploy-tool reads (e.g. `Bash(railway status*)`) only if that tooling is present.
 
-6. **Remind the user** that the universal floor (`deny`) and hard gates (`ask`) belong in `~/.claude/settings.json` (global), not the project — point them to `docs/reference/permission-policy.md` in the xari-plugins repo, and note that this command intentionally does not edit global settings.
+6. **Remind the user** that the universal floor (`deny`) and hard gates (`ask`) belong in `~/.claude/settings.json` (global), not the project — point them to `docs/reference/permission-policy.md` in the wayworks repo, and note that this command intentionally does not edit global settings.
 
 Report a summary of exactly which files you changed.

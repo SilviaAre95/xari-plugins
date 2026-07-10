@@ -13,7 +13,7 @@ transitions an agent would encounter in practice, by hand.
 ## Setup
 
 ```bash
-GATE=/path/to/xari-plugins/plugins/harness/hooks/scripts/loop-deploy-gate.sh
+GATE=/path/to/wayworks/plugins/harness/hooks/scripts/loop-deploy-gate.sh
 d=$(mktemp -d)
 
 # arm the loop (what /loop-deploy does after a prod deploy)

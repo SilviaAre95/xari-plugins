@@ -1,11 +1,11 @@
 {
   "name": "shared",
-  "version": "1.3.2",
-  "description": "Shared conventions, coding style, and meta-skills for xari-plugins",
+  "version": "2.0.0",
+  "description": "Shared conventions, meta-skills, stack profiles, and the wayworks-init/wayworks-onboard bootstrap commands",
   "author": {
     "name": "Silvia Arellano"
   },
-  "repository": "https://github.com/SilviaAre95/xari-plugins",
+  "repository": "https://github.com/SilviaAre95/wayworks",
   "license": "MIT",
   "keywords": [
     "conventions",

@@ -3,7 +3,7 @@
 **Date:** 2026-06-29
 **Status:** Approved (design)
 **Author:** Silvia Arellano
-**Repo:** xari-plugins
+**Repo:** wayworks
 
 ## Problem
 
@@ -11,7 +11,7 @@ Development today is: start chat → target something → brainstorm/spec/implem
 
 Goal: make development feel like *kicking off an AI workflow* that runs uninterrupted, with **tiers of authorization** so safe work flows freely while genuinely risky actions still stop for a human. Plus a **build-test-fix loop** that iterates to a green tree on its own.
 
-The system must be **reusable across all projects** and **public-safe** (it ships through the `xari-plugins` marketplace).
+The system must be **reusable across all projects** and **public-safe** (it ships through the `wayworks` marketplace).
 
 ## Decisions (locked during brainstorming)
 

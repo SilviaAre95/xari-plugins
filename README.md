@@ -1,44 +1,47 @@
-# xari-plugins
+# wayworks
 
-Opinionated Claude Code plugins for full-stack engineering workflows. 15 plugins, 43 skills, 6 commands, 5 sub-agents, and 5 stack profiles.
+An open-source way of work for AI-assisted building — Claude Code plugins with second-brain (Obsidian) support and tracker (Linear) integration. 15 plugins, 43 skills, 6 commands, 5 sub-agents, and 5 stack profiles.
 
-**Core** (enable everywhere): `shared`, `harness`, `security`, `test-builder`, `feature-bank`. **Extended** (enable per stack): everything else — `/xari-init` picks the right set for a repo.
+- `/wayworks-init` — bootstrap a repo: plugin fleet, CLAUDE.md header, verify gate
+- `/wayworks-onboard` — link a project's triangle: repo ↔ second brain ↔ tracker
+
+**Core** (enable everywhere): `shared`, `harness`, `security`, `test-builder`, `feature-bank`. **Extended** (enable per stack): everything else — `/wayworks-init` picks the right set for a repo.
 
 ## Install
 
 ### From GitHub (marketplace)
 
 ```bash
-claude plugin marketplace add SilviaAre95/xari-plugins
+claude plugin marketplace add SilviaAre95/wayworks
 ```
 
 Then install individual plugins:
 
 ```bash
-claude plugin install shared@xari-plugins
-claude plugin install architect@xari-plugins
-claude plugin install backend-dev@xari-plugins
-claude plugin install frontend-dev@xari-plugins
-claude plugin install test-builder@xari-plugins
-claude plugin install qa@xari-plugins
-claude plugin install data-engineer@xari-plugins
-claude plugin install devops@xari-plugins
-claude plugin install security@xari-plugins
-claude plugin install design@xari-plugins
-claude plugin install tech-writer@xari-plugins
-claude plugin install pm@xari-plugins
-claude plugin install harness@xari-plugins
-claude plugin install feature-bank@xari-plugins
-claude plugin install web-tester@xari-plugins
+claude plugin install shared@wayworks
+claude plugin install architect@wayworks
+claude plugin install backend-dev@wayworks
+claude plugin install frontend-dev@wayworks
+claude plugin install test-builder@wayworks
+claude plugin install qa@wayworks
+claude plugin install data-engineer@wayworks
+claude plugin install devops@wayworks
+claude plugin install security@wayworks
+claude plugin install design@wayworks
+claude plugin install tech-writer@wayworks
+claude plugin install pm@wayworks
+claude plugin install harness@wayworks
+claude plugin install feature-bank@wayworks
+claude plugin install web-tester@wayworks
 ```
 
-Or bootstrap a repo with the whole fleet in one step: install `shared`, then run `/xari-init` inside the repo.
+Or bootstrap a repo with the whole fleet in one step: install `shared`, then run `/wayworks-init` inside the repo.
 
 ### Local development
 
 ```bash
-git clone https://github.com/SilviaAre95/xari-plugins.git
-cd xari-plugins
+git clone https://github.com/SilviaAre95/wayworks.git
+cd wayworks
 
 # Load a single plugin
 claude --plugin-dir ./plugins/architect
@@ -55,10 +58,10 @@ Coding conventions, meta-skills, and stack profiles.
 
 | Skill | Description |
 |-------|-------------|
-| `/conventions` | Apply xari working conventions — simplicity-first, explicit errors, conventional commits (language-agnostic) |
+| `/conventions` | Apply wayworks working conventions — simplicity-first, explicit errors, conventional commits (language-agnostic) |
 | `/create-skill` | Generate a new SKILL.md with proper frontmatter and structure |
-| `/xari-init` | Bootstrap a repo as a xari workspace — plugin fleet in `.claude/settings.json`, CLAUDE.md header, harness handoff |
-| `/xari-onboard` | Onboard a project from any starting point — create + link Linear project ↔ vault note ↔ repo, adapting to what exists |
+| `/wayworks-init` | Bootstrap a repo as a wayworks workspace — plugin fleet in `.claude/settings.json`, CLAUDE.md header, harness handoff |
+| `/wayworks-onboard` | Onboard a project from any starting point — create + link Linear project ↔ vault note ↔ repo, adapting to what exists |
 
 **Stack profiles** (auto-loaded based on project files — this is where language/stack opinions live):
 - `nextjs-vercel` — Next.js App Router + TypeScript style + Tailwind/Prisma + Vercel conventions
@@ -209,19 +212,19 @@ Live web-app verification. Declares a **Playwright MCP server** (headless, via `
 
 ### Settings template
 
-The easiest path is `/xari-init`, which writes this for you. Manually, drop into your project's `.claude/settings.json` (committed, so the whole team gets the same fleet on clone):
+The easiest path is `/wayworks-init`, which writes this for you. Manually, drop into your project's `.claude/settings.json` (committed, so the whole team gets the same fleet on clone):
 
 ```json
 {
   "extraKnownMarketplaces": {
-    "xari-plugins": { "source": { "source": "github", "repo": "SilviaAre95/xari-plugins" } }
+    "wayworks": { "source": { "source": "github", "repo": "SilviaAre95/wayworks" } }
   },
   "enabledPlugins": {
-    "shared@xari-plugins": true,
-    "harness@xari-plugins": true,
-    "security@xari-plugins": true,
-    "test-builder@xari-plugins": true,
-    "feature-bank@xari-plugins": true
+    "shared@wayworks": true,
+    "harness@wayworks": true,
+    "security@wayworks": true,
+    "test-builder@wayworks": true,
+    "feature-bank@wayworks": true
   }
 }
 ```
@@ -238,10 +241,10 @@ Then add the stack-specific set:
 
 ```bash
 # Project scope (committed, shared with team)
-claude plugin install architect@xari-plugins --scope project
+claude plugin install architect@wayworks --scope project
 
 # Local scope (gitignored, personal)
-claude plugin install architect@xari-plugins --scope local
+claude plugin install architect@wayworks --scope local
 ```
 
 ## Sub-agents
@@ -269,7 +272,7 @@ Or see [plugins/shared/skills/create-skill/SKILL.md](plugins/shared/skills/creat
 ## Structure
 
 ```
-xari-plugins/
+wayworks/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── plugins/

@@ -13,7 +13,7 @@ agent would encounter in practice.
 ## Setup
 
 ```bash
-GATE=/path/to/xari-plugins/plugins/harness/hooks/scripts/loop-dev-gate.sh
+GATE=/path/to/wayworks/plugins/harness/hooks/scripts/loop-dev-gate.sh
 d=$(mktemp -d)
 
 # deterministic gate for this scratch project: pass once a LICENSE file exists

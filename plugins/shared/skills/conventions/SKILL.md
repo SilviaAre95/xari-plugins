@@ -1,6 +1,6 @@
 ---
 name: conventions
-description: "Apply xari working conventions: simplicity-first, root-cause fixes, explicit error handling, conventional commits. Language-agnostic — stack specifics load via stack profiles."
+description: "Apply wayworks working conventions: simplicity-first, root-cause fixes, explicit error handling, conventional commits. Language-agnostic — stack specifics load via stack profiles."
 user-invocable: true
 argument-hint: "[focus-area e.g. review|commits|errors]"
 ---

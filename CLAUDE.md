@@ -1,4 +1,4 @@
-# xari-plugins
+# wayworks
 
 Claude Code plugin marketplace: 15 plugins under `plugins/`, manifest at `.claude-plugin/marketplace.json`, per-plugin manifests at `plugins/<name>/.claude-plugin/plugin.json`. Public repo, consumed by other people — treat every merge as a release.
 
