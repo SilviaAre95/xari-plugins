@@ -1,0 +1,8 @@
+# /loop-deploy config — Vercel. Committed per-project.
+deploy: "vercel deploy --prod"     # command that deploys (the agent runs it once per attempt)
+watch: "vercel inspect --wait"     # blocks until the deploy resolves
+# verify: a single command that is 0 iff prod is healthy — compose health + smoke + error-rate:
+verify: "curl -fsS https://app.example.com/health >/dev/null && npm run smoke:prod && npm run check:error-rate"
+rollback: "vercel rollback"        # run when max_redeploys is exceeded — never leave prod broken
+max_redeploys: 3
+migrations_gate: true              # a DB migration deploy needs a SECOND explicit approval

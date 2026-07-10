@@ -1,0 +1,13 @@
+# /loop-deploy config — Railway. Committed per-project.
+# App (and often Postgres + a volume) live in one Railway project.
+
+deploy: "railway up --ci"          # build + deploy from the repo; streams build logs, exits nonzero on failure.
+                                   # Railway will NOT promote a deployment that fails its healthcheck
+                                   # (declared in railway.json), so `up --ci` also gates on health.
+watch: "railway status"            # `up --ci` already blocks until the deploy resolves; this confirms the active service.
+# verify: exits 0 iff prod is healthy. Set your service's public domain and health path.
+verify: "curl -fsS https://YOUR-SERVICE.up.railway.app/health >/dev/null"
+rollback: "railway redeploy --yes" # Railway keeps the last healthy deploy if a new one fails its healthcheck.
+                                   # To undo a healthy-but-bad deploy, redeploy a prior id from `railway deployment list`.
+max_redeploys: 3
+migrations_gate: true              # a deploy that includes a new DB migration needs a SECOND explicit approval
