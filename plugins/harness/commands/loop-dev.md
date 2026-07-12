@@ -21,7 +21,11 @@ Work in the `acceptEdits` tier (Shift+Tab) so edits and the allowlist run withou
    - `bugs` → the `qa:bug-review` skill (edge cases, logic errors).
    Wait for all of them, then collect every blocking finding across all graders into one list; fix them; re-run only the affected graders (again in parallel) until all are clean. Running the graders concurrently is the point — do not serialize them.
 5. **Finish.** When the deterministic gate (`.cc-verify`) is green AND all graders are clean AND you have made no further edits, create the marker: `touch .cc-dev-reviews-passed`.
-6. **PR** (if `.cc-dev.yaml` `open_pr` is not false). Push the branch and open a PR to `base`. Post to Slack: a one-line "what changed", the **bare** PR URL on its own line, and the Linear issue key. Move the Linear issue to "In Review". Never merge — that is the user's call from their phone.
+6. **PR** (if `.cc-dev.yaml` `open_pr` is not false). Push the branch. Then check for an existing PR first — re-runs must converge to ONE PR, never two:
+   `gh pr list --head <branch> --json url,state --jq '.[] | select(.state=="OPEN") | .url'`
+   - If a URL comes back: reuse it. Do NOT run `gh pr create`. Update the PR body if the diff changed materially.
+   - Only if empty: open the PR with `gh pr create`.
+   Post to Slack: a one-line "what changed", the **bare** PR URL on its own line, and the Linear issue key. On the Linear issue: move it to "In Review" and add the PR-link comment ONLY if no comment with this PR URL already exists — a re-run must not double-post. Never merge — that is the user's call from their phone.
 
 The `Stop` hook enforces this: you cannot finish until `.cc-verify` is green and `.cc-dev-reviews-passed` exists. If the deterministic gate fails it feeds the errors back; after `max_retries` a circuit breaker trips — then summarize what is still broken.
 
