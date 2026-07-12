@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 3.3.0] — 2026-07-12
+
+### Changed
+- **`harness` `1.3.0`** — `/loop-dev` step 6 is idempotent: reuse an existing open PR for the branch (never create a second) and skip the Linear PR comment when one already exists. Required for durable kanban re-runs (ristretto durable-dev-work spec, Guards 1–2).
+
 ## [marketplace 3.2.0] — 2026-07-10
 
 ### Changed
