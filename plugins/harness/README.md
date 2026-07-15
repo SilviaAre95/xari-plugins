@@ -25,10 +25,11 @@ then **review stages** (`code-review`, `security`, `bugs` by default) each run
 as a dispatched subagent against the diff. Its `Stop` hook won't let Claude
 finish until `.cc-verify` is green **and** `.cc-dev-reviews-passed` exists —
 a failing `.cc-verify` clears the marker, so a broken build forces reviews to
-re-run. In a git repo the marker is stamped with a working-tree fingerprint
-(diff vs the merge-base with `base`, hashed) that the hook re-verifies at stop
-time — tracked edits landing after the graders passed invalidate it and force
-a re-review. An empty (`touch`ed) marker is the non-git escape hatch and is
+re-run. In a git repo the marker is stamped with an anchor commit (the
+merge-base with `base`, frozen at stamp time) plus a working-tree fingerprint
+against it, which the hook re-verifies at stop time — tracked changes landing
+after the graders passed, committed or not, invalidate it and force a
+re-review. An empty (`touch`ed) marker is the non-git escape hatch and is
 trust-based. On success it
 pushes the branch and opens a PR (unless `open_pr: false`). Config — graders,
 `max_retries`, diff `base`, `open_pr` — lives in `.cc-dev.yaml`. Pass
