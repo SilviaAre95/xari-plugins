@@ -56,9 +56,11 @@ fi
 
 echo 0 > "$STATE"
 
-# The reviews marker carries a fingerprint of the working tree (diff vs the
-# merge-base with `base`) taken when the graders passed. Invariant under
-# commits, so the PR stage never falsifies it; any tracked edit changes it.
+# The reviews marker carries the anchor commit (merge-base with `base`,
+# frozen at stamp time — never recomputed, so a moving base ref like HEAD
+# cannot collapse the check) and a fingerprint of the working tree vs that
+# anchor. Invariant under commits of already-fingerprinted content, so the
+# PR stage never falsifies it; any tracked change vs the anchor does.
 BASE=$(grep -E '^base:' "$CFG" 2>/dev/null | head -1 | sed -E 's/^base:[[:space:]]*//')
 case "$BASE" in
   '"'*) BASE=$(printf '%s' "$BASE" | sed -E 's/^"([^"]*)".*$/\1/') ;;
@@ -68,12 +70,22 @@ esac
 # Only a sane ref name may reach tree_fp and the agent-facing STAMP command
 # (anything else fails merge-base at best, injects shell into the agent at worst).
 [[ "$BASE" =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] || BASE="main"
-STAMP="git diff \"\$(git merge-base $BASE HEAD)\" | git hash-object --stdin > .cc-dev-reviews-passed"
-tree_fp() {  # prints the fingerprint; prints nothing when git/base is unavailable
-  local mb
+STAMP="mb=\$(git merge-base $BASE HEAD) && { echo \"\$mb\"; git diff \"\$mb\" | git hash-object --stdin; } > .cc-dev-reviews-passed"
+marker_fresh() {  # 0 = fresh (or unverifiable outside git), 1 = stale
+  local anchor want fp
   git -C "$DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
-  mb=$(git -C "$DIR" merge-base "$BASE" HEAD 2>/dev/null) || return 0
-  git -C "$DIR" diff "$mb" 2>/dev/null | git -C "$DIR" hash-object --stdin
+  anchor=$(sed -n 1p "$MARKER" | tr -d '[:space:]')
+  want=$(sed -n 2p "$MARKER" | tr -d '[:space:]')
+  if [ -z "$want" ]; then
+    # Legacy single-line marker (hash only): verify against a freshly
+    # computed merge-base; skip if the base ref is unusable.
+    want="$anchor"
+    anchor=$(git -C "$DIR" merge-base "$BASE" HEAD 2>/dev/null) || return 0
+  fi
+  printf '%s' "$anchor" | grep -Eq '^[0-9a-f]{40,64}$' || return 1  # garbage anchor
+  git -C "$DIR" cat-file -e "$anchor" 2>/dev/null || return 1       # unknown commit
+  fp=$(git -C "$DIR" diff "$anchor" 2>/dev/null | git -C "$DIR" hash-object --stdin)
+  [ "$want" = "$fp" ]
 }
 
 # 6. Stage 2 — reviews marker must exist.
@@ -85,17 +97,15 @@ if [ ! -f "$MARKER" ]; then
   exit 0
 fi
 
-# 7. Stage 3 — a stamped marker must still match the tree. Late edits (the
-#    agent, or background jobs finishing after the graders passed) invalidate
-#    the reviews; an empty marker (touch) is the legacy/non-git escape hatch.
-if [ -s "$MARKER" ]; then
-  FP=$(tree_fp)
-  if [ -n "$FP" ] && [ "$(head -1 "$MARKER" | tr -d '[:space:]')" != "$FP" ]; then
-    rm -f "$MARKER"
-    jq -n --arg stamp "$STAMP" \
-      '{decision:"block", reason:("Reviews marker is stale: the working tree changed after the graders passed (fingerprint mismatch — late edits or background jobs?). Re-run the affected graders on the current diff, fix any findings, then re-stamp:\n\n  " + $stamp)}'
-    exit 0
-  fi
+# 7. Stage 3 — a stamped marker must still match the tree vs its stored
+#    anchor. Late changes (the agent, or background jobs finishing after the
+#    graders passed) invalidate the reviews, whether committed or not; an
+#    empty marker (touch) is the legacy/non-git escape hatch.
+if [ -s "$MARKER" ] && ! marker_fresh; then
+  rm -f "$MARKER"
+  jq -n --arg stamp "$STAMP" \
+    '{decision:"block", reason:("Reviews marker is stale: the working tree changed after the graders passed (fingerprint mismatch — late edits or background jobs?). Re-run the affected graders on the current diff, fix any findings, then re-stamp:\n\n  " + $stamp)}'
+  exit 0
 fi
 
 # 8. All green: disarm and allow stop.

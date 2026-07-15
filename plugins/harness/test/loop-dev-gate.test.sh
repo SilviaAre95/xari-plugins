@@ -93,7 +93,9 @@ gsetup() { # gsetup <dir> — init repo on main with one tracked file
   echo hi > "$1/f.txt"; git -C "$1" add f.txt
   git -C "$1" -c user.email=t@t -c user.name=t commit -qm init
 }
-gstamp() { git -C "$1" diff "$(git -C "$1" merge-base main HEAD)" | git -C "$1" hash-object --stdin > "$1/.cc-dev-reviews-passed"; }
+gstamp() { # two-line marker: anchor commit + fingerprint (as the STAMP command does)
+  local mb; mb=$(git -C "$1" merge-base main HEAD) && { echo "$mb"; git -C "$1" diff "$mb" | git -C "$1" hash-object --stdin; } > "$1/.cc-dev-reviews-passed"
+}
 
 # 10. Git repo + marker with matching fingerprint -> allow, disarm
 d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active"; gstamp "$d"
@@ -138,7 +140,7 @@ rm -rf "$d"
 # 15. Stage-2 block message includes the fingerprint stamp command
 d=$(mktemp -d); touch "$d/.cc-loop-dev-active"
 out=$(CC_GATE_CMD="true" run "$d")
-check "stage-2 message has stamp cmd" "" "$out" "git hash-object --stdin > .cc-dev-reviews-passed"
+check "stage-2 message has stamp cmd" "" "$out" "git hash-object --stdin; } > .cc-dev-reviews-passed"
 rm -rf "$d"
 
 # 16. Quoted YAML base ("main") -> quotes stripped, fingerprint STILL enforced
@@ -157,6 +159,25 @@ printf 'base: main"; touch PWNED #\n' > "$d/.cc-dev.yaml"
 out=$(CC_GATE_CMD="true" run "$d")
 check "hostile base: falls back to main" "" "$out" "git merge-base main HEAD"
 check_not "hostile base: no injection in message" "$out" "PWNED"
+rm -rf "$d"
+
+# 18. Post-stamp COMMIT (clean tree at stamp AND at stop) -> caught: the
+#     anchor is frozen in the marker at stamp time, so a recomputed/moving
+#     merge-base (e.g. base: HEAD, or base == checked-out branch) cannot
+#     collapse the check
+d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active"
+echo reviewed >> "$d/f.txt"; git -C "$d" -c user.email=t@t -c user.name=t commit -qam reviewed
+gstamp "$d"
+echo unreviewed >> "$d/f.txt"; git -C "$d" -c user.email=t@t -c user.name=t commit -qam unreviewed
+out=$(CC_GATE_CMD="true" run "$d")
+check "post-stamp commit blocks" "" "$out" "stale"
+rm -rf "$d"
+
+# 19. Legacy single-line marker (hash only, pre-anchor format) still verified
+d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active"
+git -C "$d" diff "$(git -C "$d" merge-base main HEAD)" | git -C "$d" hash-object --stdin > "$d/.cc-dev-reviews-passed"
+out=$(CC_GATE_CMD="true" run "$d")
+check "legacy marker allows when fresh" "" "$out" "EMPTY"
 rm -rf "$d"
 
 echo "---"; echo "pass=$pass fail=$fail"; [ "$fail" -eq 0 ]
