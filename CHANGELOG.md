@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 3.3.1] — 2026-07-15
+
+### Fixed
+- **`harness` `1.3.1`** — Stop-gate race hardening (XARI-81). All three loop gates now serialize on a shared mkdir-based mutex (`.cc-loop-gate.lock`, stale-lock recovery by holder PID), so Stop-parallel sibling gates and overlapping sessions can no longer run the verify command concurrently, double-count attempts, or race the sentinel/marker deletions; a contended lock blocks without consuming a retry. `/loop-dev`'s reviews marker is now stamped with a working-tree fingerprint (`git diff $(git merge-base <base> HEAD) | git hash-object --stdin`) and re-verified at stop time — edits landing after the graders passed (e.g. late background jobs) invalidate the marker and force a re-review instead of silently bypassing it. Empty (`touch`ed) markers remain accepted as the non-git/legacy escape hatch; the fingerprint is commit-invariant on feature branches.
+
 ## [marketplace 3.3.0] — 2026-07-12
 
 ### Changed

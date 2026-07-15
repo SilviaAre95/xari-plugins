@@ -74,4 +74,27 @@ mt_out6=$(printf '{"stop_hook_active":true,"cwd":"%s"}' "$mt_dir" \
 mt_d6=$(decision "$mt_out6")
 check "multi-turn call 6 allows (sentinel gone)" "$mt_d6" "ALLOW"
 
+# 8. Live lock held by another process -> block WITHOUT running the gate:
+#    no attempt counted, sentinel kept, lock not stolen.
+lk_dir=$(mktemp -d); touch "$lk_dir/.cc-loop-active"
+mkdir "$lk_dir/.cc-loop-gate.lock"; echo $$ > "$lk_dir/.cc-loop-gate.lock/pid"
+lk_out=$(printf '{"stop_hook_active":false,"cwd":"%s"}' "$lk_dir" \
+  | CLAUDE_PROJECT_DIR="$lk_dir" CC_GATE_CMD="false" bash "$HOOK")
+lk_d=$(decision "$lk_out"); check "live lock blocks stop" "$lk_d" "block"
+[ -f "$lk_dir/.cc-loop-state" ] && { echo "FAIL - lock contention must not count an attempt"; fail=1; } \
+  || echo "ok   - lock contention counts no attempt"
+[ -f "$lk_dir/.cc-loop-active" ] && echo "ok   - lock contention keeps sentinel" \
+  || { echo "FAIL - lock contention keeps sentinel"; fail=1; }
+[ -d "$lk_dir/.cc-loop-gate.lock" ] && echo "ok   - live lock not stolen" \
+  || { echo "FAIL - live lock not stolen"; fail=1; }
+
+# 9. Stale lock (dead holder pid) -> stolen, gate runs, lock released on exit.
+sl_dir=$(mktemp -d); touch "$sl_dir/.cc-loop-active"
+mkdir "$sl_dir/.cc-loop-gate.lock"; sl_dead=$(bash -c 'echo $$'); echo "$sl_dead" > "$sl_dir/.cc-loop-gate.lock/pid"
+sl_out=$(printf '{"stop_hook_active":false,"cwd":"%s"}' "$sl_dir" \
+  | CLAUDE_PROJECT_DIR="$sl_dir" CC_GATE_CMD="true" bash "$HOOK")
+sl_d=$(decision "$sl_out"); check "stale lock stolen: green allows" "$sl_d" "ALLOW"
+[ -d "$sl_dir/.cc-loop-gate.lock" ] && { echo "FAIL - stale lock released after run"; fail=1; } \
+  || echo "ok   - stale lock released after run"
+
 exit $fail

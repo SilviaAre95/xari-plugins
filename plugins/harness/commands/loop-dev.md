@@ -20,7 +20,9 @@ Work in the `acceptEdits` tier (Shift+Tab) so edits and the allowlist run withou
    - `security` → the `security:code-audit` skill (OWASP, injection, authz, secrets).
    - `bugs` → the `qa:bug-review` skill (edge cases, logic errors).
    Wait for all of them, then collect every blocking finding across all graders into one list; fix them; re-run only the affected graders (again in parallel) until all are clean. Running the graders concurrently is the point — do not serialize them.
-5. **Finish.** When the deterministic gate (`.cc-verify`) is green AND all graders are clean AND you have made no further edits, create the marker: `touch .cc-dev-reviews-passed`.
+5. **Finish.** When the deterministic gate (`.cc-verify`) is green AND all graders are clean AND you have made no further edits, stamp the marker with the tree fingerprint so late edits invalidate it:
+   `git diff "$(git merge-base <base> HEAD)" | git hash-object --stdin > .cc-dev-reviews-passed`
+   (outside a git repo: `touch .cc-dev-reviews-passed`). The Stop hook recomputes the fingerprint; if the tree changed after stamping, the marker is rejected and you must re-run the affected graders.
 6. **PR** (if `.cc-dev.yaml` `open_pr` is not false). Push the branch. Then check for an existing PR first — re-runs must converge to ONE PR, never two:
    `gh pr list --head <branch> --json url,state --jq '.[] | select(.state=="OPEN") | .url'`
    - If a URL comes back: reuse it. Do NOT run `gh pr create`. Update the PR body if the diff changed materially.

@@ -57,4 +57,13 @@ has "no-verify blocks" "$out" 'no `verify:` command'
 eq "no-verify disarms" "$([ -f "$d/.cc-deploy-active" ] && echo present || echo gone)" "gone"
 rm -rf "$d"
 
+# 8. Live lock held by another process -> block, no redeploy counted, sentinel kept
+d=$(mktemp -d); touch "$d/.cc-deploy-active"
+mkdir "$d/.cc-loop-gate.lock"; echo $$ > "$d/.cc-loop-gate.lock/pid"
+out=$(CC_DEPLOY_VERIFY_CMD="false" run "$d")
+has "live lock blocks" "$out" "already in progress"
+eq "live lock counts no redeploy" "$([ -f "$d/.cc-deploy-state" ] && cat "$d/.cc-deploy-state" || echo none)" "none"
+eq "live lock keeps sentinel" "$([ -f "$d/.cc-deploy-active" ] && echo present)" "present"
+rm -rf "$d"
+
 echo "---"; echo "pass=$pass fail=$fail"; [ "$fail" -eq 0 ]

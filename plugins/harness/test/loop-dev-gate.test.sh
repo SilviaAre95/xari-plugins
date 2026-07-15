@@ -66,4 +66,77 @@ out=$(CC_GATE_CMD="true" run "$d")
 check "green resets counter" "" "$(cat "$d/.cc-loop-dev-state" 2>/dev/null)" "0"
 rm -rf "$d"
 
+# 8. Live lock held by another process -> block without running the gate:
+#    counter untouched, marker kept, lock not stolen
+d=$(mktemp -d); touch "$d/.cc-loop-dev-active" "$d/.cc-dev-reviews-passed"; echo 1 > "$d/.cc-loop-dev-state"
+mkdir "$d/.cc-loop-gate.lock"; echo $$ > "$d/.cc-loop-gate.lock/pid"
+out=$(CC_GATE_CMD="false" run "$d")
+check "live lock blocks" "" "$out" "already in progress"
+check "live lock keeps counter" "" "$(cat "$d/.cc-loop-dev-state")" "1"
+check "live lock keeps marker" "" "$([ -f "$d/.cc-dev-reviews-passed" ] && echo present)" "present"
+check "live lock not stolen" "" "$([ -d "$d/.cc-loop-gate.lock" ] && echo present)" "present"
+rm -rf "$d"
+
+# 9. Stale lock (dead holder pid) -> stolen, gate proceeds, lock released on exit
+d=$(mktemp -d); touch "$d/.cc-loop-dev-active"
+mkdir "$d/.cc-loop-gate.lock"; dead=$(bash -c 'echo $$'); echo "$dead" > "$d/.cc-loop-gate.lock/pid"
+out=$(CC_GATE_CMD="true" run "$d")
+check "stale lock stolen: gate proceeds" "" "$out" "review stages"
+check "stale lock released after run" "" "$([ -d "$d/.cc-loop-gate.lock" ] && echo present || echo gone)" "gone"
+rm -rf "$d"
+
+# git helper for fingerprint tests
+gsetup() { # gsetup <dir> — init repo on main with one tracked file
+  git -C "$1" init -q -b main
+  echo hi > "$1/f.txt"; git -C "$1" add f.txt
+  git -C "$1" -c user.email=t@t -c user.name=t commit -qm init
+}
+gstamp() { git -C "$1" diff "$(git -C "$1" merge-base main HEAD)" | git -C "$1" hash-object --stdin > "$1/.cc-dev-reviews-passed"; }
+
+# 10. Git repo + marker with matching fingerprint -> allow, disarm
+d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active"; gstamp "$d"
+out=$(CC_GATE_CMD="true" run "$d")
+check "fresh marker allows" "" "$out" "EMPTY"
+check "fresh marker disarms" "" "$([ -f "$d/.cc-loop-dev-active" ] && echo present || echo gone)" "gone"
+rm -rf "$d"
+
+# 11. Git repo + tree edited AFTER stamping -> stale marker: block + marker cleared
+d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active"; gstamp "$d"
+echo late-edit >> "$d/f.txt"
+out=$(CC_GATE_CMD="true" run "$d")
+check "stale marker blocks" "" "$out" "stale"
+check "stale marker cleared" "" "$([ -f "$d/.cc-dev-reviews-passed" ] && echo present || echo gone)" "gone"
+check "stale marker keeps sentinel" "" "$([ -f "$d/.cc-loop-dev-active" ] && echo present)" "present"
+rm -rf "$d"
+
+# 12. Feature branch (the loop-dev flow): committing after stamping does NOT
+#     falsify the fingerprint — merge-base stays the fork point. (Working on
+#     the base branch itself is not invariant: a post-stamp commit moves the
+#     merge-base and fails safe into a re-review.)
+d=$(mktemp -d); gsetup "$d"; git -C "$d" checkout -qb feature
+touch "$d/.cc-loop-dev-active"
+echo reviewed-change >> "$d/f.txt"; gstamp "$d"
+git -C "$d" -c user.email=t@t -c user.name=t commit -qam work
+out=$(CC_GATE_CMD="true" run "$d")
+check "commit after stamp still allows" "" "$out" "EMPTY"
+rm -rf "$d"
+
+# 13. Git repo + legacy empty marker (touch) -> allow (escape hatch)
+d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active" "$d/.cc-dev-reviews-passed"
+out=$(CC_GATE_CMD="true" run "$d")
+check "empty marker allows (legacy)" "" "$out" "EMPTY"
+rm -rf "$d"
+
+# 14. Non-git dir + non-empty marker -> allow (fingerprint unavailable, skip check)
+d=$(mktemp -d); touch "$d/.cc-loop-dev-active"; echo whatever > "$d/.cc-dev-reviews-passed"
+out=$(CC_GATE_CMD="true" run "$d")
+check "non-git non-empty marker allows" "" "$out" "EMPTY"
+rm -rf "$d"
+
+# 15. Stage-2 block message includes the fingerprint stamp command
+d=$(mktemp -d); touch "$d/.cc-loop-dev-active"
+out=$(CC_GATE_CMD="true" run "$d")
+check "stage-2 message has stamp cmd" "" "$out" "git hash-object --stdin > .cc-dev-reviews-passed"
+rm -rf "$d"
+
 echo "---"; echo "pass=$pass fail=$fail"; [ "$fail" -eq 0 ]
