@@ -3,7 +3,9 @@
 set -uo pipefail
 GATE="$(cd "$(dirname "$0")/.." && pwd)/hooks/scripts/loop-deploy-gate.sh"
 pass=0; fail=0
-run() { printf '{"cwd":"%s"}' "$1" | bash "$GATE"; }
+# CLAUDE_PROJECT_DIR pinned to the temp dir: under a Stop hook the env leaks
+# the real project dir and the gate would resolve DIR to it instead.
+run() { printf '{"cwd":"%s"}' "$1" | CLAUDE_PROJECT_DIR="$1" bash "$GATE"; }
 has() { if printf '%s' "$2" | grep -q "$3"; then echo "ok: $1"; pass=$((pass+1)); else echo "FAIL: $1 (want '$3' in: $2)"; fail=$((fail+1)); fi; }
 empty() { if [ -z "$2" ]; then echo "ok: $1"; pass=$((pass+1)); else echo "FAIL: $1 (want empty, got: $2)"; fail=$((fail+1)); fi; }
 eq() { if [ "$2" = "$3" ]; then echo "ok: $1"; pass=$((pass+1)); else echo "FAIL: $1 (want '$3' got '$2')"; fail=$((fail+1)); fi; }
@@ -55,6 +57,15 @@ d=$(mktemp -d); touch "$d/.cc-deploy-active"
 out=$(run "$d")
 has "no-verify blocks" "$out" 'no `verify:` command'
 eq "no-verify disarms" "$([ -f "$d/.cc-deploy-active" ] && echo present || echo gone)" "gone"
+rm -rf "$d"
+
+# 8. Live lock held by another process -> block, no redeploy counted, sentinel kept
+d=$(mktemp -d); touch "$d/.cc-deploy-active"
+mkdir "$d/.cc-loop-gate.lock"; echo $$ > "$d/.cc-loop-gate.lock/pid"
+out=$(CC_DEPLOY_VERIFY_CMD="false" run "$d")
+has "live lock blocks" "$out" "already in progress"
+eq "live lock counts no redeploy" "$([ -f "$d/.cc-deploy-state" ] && cat "$d/.cc-deploy-state" || echo none)" "none"
+eq "live lock keeps sentinel" "$([ -f "$d/.cc-deploy-active" ] && echo present)" "present"
 rm -rf "$d"
 
 echo "---"; echo "pass=$pass fail=$fail"; [ "$fail" -eq 0 ]

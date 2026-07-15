@@ -3,7 +3,9 @@
 # Blocks Claude from stopping until the project's verify gate is green, with a
 # circuit breaker after MAX failed attempts. Bounded by attempt counter, not
 # stop_hook_active (which Claude Code sets on every re-entry after a block).
+# Serialized against sibling gates and overlapping sessions via gate-lock.sh.
 set -uo pipefail
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/gate-lock.sh"
 MAX=5
 INPUT=$(cat)
 DIR="${CLAUDE_PROJECT_DIR:-$(printf '%s' "$INPUT" | jq -r '.cwd // "."')}"
@@ -14,6 +16,12 @@ LOG="$DIR/.cc-loop.log"
 
 # 1. Loop not armed -> allow stop.
 [ -f "$SENTINEL" ] || exit 0
+
+# 1b. One gate run at a time (Stop hooks run in parallel; sessions can overlap).
+if ! gate_lock "$DIR"; then
+  jq -n '{decision:"block", reason:"Another harness gate run is already in progress in this project (.cc-loop-gate.lock). Wait for it to finish, then try to stop again — do NOT delete the lock; stale locks are reclaimed automatically."}'
+  exit 0
+fi
 
 # 2. Resolve the gate command: env override (tests) > .cc-verify > default.
 if [ -n "${CC_GATE_CMD:-}" ]; then

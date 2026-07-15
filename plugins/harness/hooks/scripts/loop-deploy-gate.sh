@@ -3,8 +3,10 @@
 # Runs the deterministic prod-verify command; green => loop closed. Failing =>
 # block "fix and redeploy". After max_redeploys => run the rollback command,
 # disarm, and block telling the agent to escalate. Never leaves prod broken by
-# an exhausted loop. Coexists with loop-gate.sh / loop-dev-gate.sh.
+# an exhausted loop. Coexists with loop-gate.sh / loop-dev-gate.sh;
+# serialized against sibling gates and overlapping sessions via gate-lock.sh.
 set -uo pipefail
+. "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/gate-lock.sh"
 INPUT=$(cat)
 DIR="${CLAUDE_PROJECT_DIR:-$(printf '%s' "$INPUT" | jq -r '.cwd // "."')}"
 SENTINEL="$DIR/.cc-deploy-active"
@@ -24,6 +26,12 @@ _cfg_get_str() {  # _cfg_get_str <key> — read a string value from $CFG, honori
 
 # 1. Not armed for loop-deploy -> allow stop.
 [ -f "$SENTINEL" ] || exit 0
+
+# 1b. One gate run at a time (Stop hooks run in parallel; sessions can overlap).
+if ! gate_lock "$DIR"; then
+  jq -n '{decision:"block", reason:"Another harness gate run is already in progress in this project (.cc-loop-gate.lock). Wait for it to finish, then try to stop again — do NOT delete the lock; stale locks are reclaimed automatically."}'
+  exit 0
+fi
 
 # 2. max_redeploys from .cc-deploy.yaml (default 3).
 MAX=3
