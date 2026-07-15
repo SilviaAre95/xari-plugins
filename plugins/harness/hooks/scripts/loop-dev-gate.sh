@@ -72,17 +72,15 @@ esac
 [[ "$BASE" =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] || BASE="main"
 STAMP="mb=\$(git merge-base $BASE HEAD) && { echo \"\$mb\"; git diff \"\$mb\" | git hash-object --stdin; } > .cc-dev-reviews-passed"
 marker_fresh() {  # 0 = fresh (or unverifiable outside git), 1 = stale
+  # A non-empty marker MUST be the two-line stamped format: anchor commit,
+  # then fingerprint. Anything else fails CLOSED — never fall back to
+  # recomputing merge-base, whose ref can move with HEAD (base: HEAD).
   local anchor want fp
   git -C "$DIR" rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
   anchor=$(sed -n 1p "$MARKER" | tr -d '[:space:]')
   want=$(sed -n 2p "$MARKER" | tr -d '[:space:]')
-  if [ -z "$want" ]; then
-    # Legacy single-line marker (hash only): verify against a freshly
-    # computed merge-base; skip if the base ref is unusable.
-    want="$anchor"
-    anchor=$(git -C "$DIR" merge-base "$BASE" HEAD 2>/dev/null) || return 0
-  fi
-  printf '%s' "$anchor" | grep -Eq '^[0-9a-f]{40,64}$' || return 1  # garbage anchor
+  printf '%s' "$anchor" | grep -Eq '^[0-9a-f]{40,64}$' || return 1  # malformed anchor
+  [ -n "$want" ] || return 1                                        # missing fingerprint
   git -C "$DIR" cat-file -e "$anchor" 2>/dev/null || return 1       # unknown commit
   fp=$(git -C "$DIR" diff "$anchor" 2>/dev/null | git -C "$DIR" hash-object --stdin)
   [ "$want" = "$fp" ]

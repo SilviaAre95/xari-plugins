@@ -173,11 +173,13 @@ out=$(CC_GATE_CMD="true" run "$d")
 check "post-stamp commit blocks" "" "$out" "stale"
 rm -rf "$d"
 
-# 19. Legacy single-line marker (hash only, pre-anchor format) still verified
+# 19. Non-empty marker that is not the two-line stamped format -> fails
+#     CLOSED (stale), never falls back to recomputing a movable merge-base
 d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active"
 git -C "$d" diff "$(git -C "$d" merge-base main HEAD)" | git -C "$d" hash-object --stdin > "$d/.cc-dev-reviews-passed"
 out=$(CC_GATE_CMD="true" run "$d")
-check "legacy marker allows when fresh" "" "$out" "EMPTY"
+check "single-line marker fails closed" "" "$out" "stale"
+check "single-line marker cleared" "" "$([ -f "$d/.cc-dev-reviews-passed" ] && echo present || echo gone)" "gone"
 rm -rf "$d"
 
 echo "---"; echo "pass=$pass fail=$fail"; [ "$fail" -eq 0 ]
