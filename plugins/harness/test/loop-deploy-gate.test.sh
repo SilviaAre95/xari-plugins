@@ -3,7 +3,9 @@
 set -uo pipefail
 GATE="$(cd "$(dirname "$0")/.." && pwd)/hooks/scripts/loop-deploy-gate.sh"
 pass=0; fail=0
-run() { printf '{"cwd":"%s"}' "$1" | bash "$GATE"; }
+# CLAUDE_PROJECT_DIR pinned to the temp dir: under a Stop hook the env leaks
+# the real project dir and the gate would resolve DIR to it instead.
+run() { printf '{"cwd":"%s"}' "$1" | CLAUDE_PROJECT_DIR="$1" bash "$GATE"; }
 has() { if printf '%s' "$2" | grep -q "$3"; then echo "ok: $1"; pass=$((pass+1)); else echo "FAIL: $1 (want '$3' in: $2)"; fail=$((fail+1)); fi; }
 empty() { if [ -z "$2" ]; then echo "ok: $1"; pass=$((pass+1)); else echo "FAIL: $1 (want empty, got: $2)"; fail=$((fail+1)); fi; }
 eq() { if [ "$2" = "$3" ]; then echo "ok: $1"; pass=$((pass+1)); else echo "FAIL: $1 (want '$3' got '$2')"; fail=$((fail+1)); fi; }

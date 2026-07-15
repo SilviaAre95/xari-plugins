@@ -4,7 +4,9 @@ set -uo pipefail
 GATE="$(cd "$(dirname "$0")/.." && pwd)/hooks/scripts/loop-dev-gate.sh"
 pass=0; fail=0
 run() { # run <cwd> ; feeds stdin JSON, prints hook stdout
-  printf '{"cwd":"%s"}' "$1" | bash "$GATE"
+  # CLAUDE_PROJECT_DIR pinned to the temp dir: under a Stop hook the env leaks
+  # the real project dir and the gate would resolve DIR to it instead.
+  printf '{"cwd":"%s"}' "$1" | CLAUDE_PROJECT_DIR="$1" bash "$GATE"
 }
 check() { # check <name> <condition-desc> <actual> <expected-substring-or-EMPTY>
   local name="$1" actual="$3" want="$4"
