@@ -141,4 +141,22 @@ out=$(CC_GATE_CMD="true" run "$d")
 check "stage-2 message has stamp cmd" "" "$out" "git hash-object --stdin > .cc-dev-reviews-passed"
 rm -rf "$d"
 
+# 16. Quoted YAML base ("main") -> quotes stripped, fingerprint STILL enforced
+#     (regression: unstripped quotes made merge-base fail and the check fail open)
+d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active"
+printf 'base: "main"\n' > "$d/.cc-dev.yaml"
+gstamp "$d"; echo late-edit >> "$d/f.txt"
+out=$(CC_GATE_CMD="true" run "$d")
+check "quoted base: staleness still enforced" "" "$out" "stale"
+rm -rf "$d"
+
+# 17. Hostile base value -> sanitized to main; no shell injection in the STAMP
+#     command the agent is told to run
+d=$(mktemp -d); gsetup "$d"; touch "$d/.cc-loop-dev-active"
+printf 'base: main"; touch PWNED #\n' > "$d/.cc-dev.yaml"
+out=$(CC_GATE_CMD="true" run "$d")
+check "hostile base: falls back to main" "" "$out" "git merge-base main HEAD"
+check_not "hostile base: no injection in message" "$out" "PWNED"
+rm -rf "$d"
+
 echo "---"; echo "pass=$pass fail=$fail"; [ "$fail" -eq 0 ]

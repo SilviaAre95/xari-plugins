@@ -19,7 +19,7 @@ LOG="$DIR/.cc-loop.log"
 
 # 1b. One gate run at a time (Stop hooks run in parallel; sessions can overlap).
 if ! gate_lock "$DIR"; then
-  jq -n '{decision:"block", reason:"Another harness gate run is already in progress in this project (.cc-loop-gate.lock). Wait for it to finish, then try to stop again. If no gate is actually running, remove the stale lock: rm -rf .cc-loop-gate.lock"}'
+  jq -n '{decision:"block", reason:"Another harness gate run is already in progress in this project (.cc-loop-gate.lock). Wait for it to finish, then try to stop again — do NOT delete the lock; stale locks are reclaimed automatically."}'
   exit 0
 fi
 

@@ -21,7 +21,7 @@ LOG="$DIR/.cc-loop-dev.log"
 # 2. One gate run at a time. Stop hooks run in parallel and sessions can
 #    overlap; a concurrent run must not race the verify command or the state.
 if ! gate_lock "$DIR"; then
-  jq -n '{decision:"block", reason:"Another harness gate run is already in progress in this project (.cc-loop-gate.lock). Wait for it to finish, then try to stop again. If no gate is actually running, remove the stale lock: rm -rf .cc-loop-gate.lock"}'
+  jq -n '{decision:"block", reason:"Another harness gate run is already in progress in this project (.cc-loop-gate.lock). Wait for it to finish, then try to stop again — do NOT delete the lock; stale locks are reclaimed automatically."}'
   exit 0
 fi
 
@@ -59,8 +59,15 @@ echo 0 > "$STATE"
 # The reviews marker carries a fingerprint of the working tree (diff vs the
 # merge-base with `base`) taken when the graders passed. Invariant under
 # commits, so the PR stage never falsifies it; any tracked edit changes it.
-BASE=$(grep -E '^base:' "$CFG" 2>/dev/null | head -1 | sed -E 's/^base:[[:space:]]*//; s/[[:space:]]*#.*$//; s/[[:space:]]*$//')
-[ -z "$BASE" ] && BASE="main"
+BASE=$(grep -E '^base:' "$CFG" 2>/dev/null | head -1 | sed -E 's/^base:[[:space:]]*//')
+case "$BASE" in
+  '"'*) BASE=$(printf '%s' "$BASE" | sed -E 's/^"([^"]*)".*$/\1/') ;;
+  "'"*) BASE=$(printf '%s' "$BASE" | sed -E "s/^'([^']*)'.*\$/\\1/") ;;
+  *)    BASE=$(printf '%s' "$BASE" | sed -E 's/[[:space:]]*#.*$//; s/[[:space:]]*$//') ;;
+esac
+# Only a sane ref name may reach tree_fp and the agent-facing STAMP command
+# (anything else fails merge-base at best, injects shell into the agent at worst).
+[[ "$BASE" =~ ^[A-Za-z0-9][A-Za-z0-9._/-]*$ ]] || BASE="main"
 STAMP="git diff \"\$(git merge-base $BASE HEAD)\" | git hash-object --stdin > .cc-dev-reviews-passed"
 tree_fp() {  # prints the fingerprint; prints nothing when git/base is unavailable
   local mb

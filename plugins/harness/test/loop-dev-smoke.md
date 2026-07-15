@@ -57,7 +57,7 @@ asks reviews` / `green-no-marker keeps sentinel`):
 ```json
 {
   "decision": "block",
-  "reason": "Deterministic gate is green. Now run the review stages: [code-review, security, bugs]. Dispatch one subagent per grader against the diff, fix every blocking finding, and re-verify. When ALL graders are clean AND you have made no further code edits, create the marker to finish:\n\n  touch .cc-dev-reviews-passed\n\nDo NOT create the marker before the reviews are actually clean."
+  "reason": "Deterministic gate is green. Now run the review stages: [code-review, security, bugs]. Dispatch one subagent per grader against the diff, fix every blocking finding, and re-verify. When ALL graders are clean AND you have made no further code edits, stamp the marker to finish:\n\n  git diff \"$(git merge-base main HEAD)\" | git hash-object --stdin > .cc-dev-reviews-passed\n\n(outside a git repo: touch .cc-dev-reviews-passed)\n\nDo NOT create the marker before the reviews are actually clean."
 }
 ```
 
@@ -126,7 +126,7 @@ documented expectation exactly.
 ```json
 {
   "decision": "block",
-  "reason": "Deterministic gate is green. Now run the review stages: [code-review, security, bugs]. Dispatch one subagent per grader against the diff, fix every blocking finding, and re-verify. When ALL graders are clean AND you have made no further code edits, create the marker to finish:\n\n  touch .cc-dev-reviews-passed\n\nDo NOT create the marker before the reviews are actually clean."
+  "reason": "Deterministic gate is green. Now run the review stages: [code-review, security, bugs]. Dispatch one subagent per grader against the diff, fix every blocking finding, and re-verify. When ALL graders are clean AND you have made no further code edits, stamp the marker to finish:\n\n  git diff \"$(git merge-base main HEAD)\" | git hash-object --stdin > .cc-dev-reviews-passed\n\n(outside a git repo: touch .cc-dev-reviews-passed)\n\nDo NOT create the marker before the reviews are actually clean."
 }
 ```
 

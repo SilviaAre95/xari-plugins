@@ -25,8 +25,11 @@ then **review stages** (`code-review`, `security`, `bugs` by default) each run
 as a dispatched subagent against the diff. Its `Stop` hook won't let Claude
 finish until `.cc-verify` is green **and** `.cc-dev-reviews-passed` exists —
 a failing `.cc-verify` clears the marker, so a broken build forces reviews to
-re-run. Otherwise the marker is trust-based: the command instructs the agent
-to create it only once reviews are clean and no further edits remain. On success it
+re-run. In a git repo the marker is stamped with a working-tree fingerprint
+(diff vs the merge-base with `base`, hashed) that the hook re-verifies at stop
+time — tracked edits landing after the graders passed invalidate it and force
+a re-review. An empty (`touch`ed) marker is the non-git escape hatch and is
+trust-based. On success it
 pushes the branch and opens a PR (unless `open_pr: false`). Config — graders,
 `max_retries`, diff `base`, `open_pr` — lives in `.cc-dev.yaml`. Pass
 `--check-plan` to pause after the plan step for your approval before it builds.
@@ -55,6 +58,6 @@ Config — `deploy`, `watch`, `verify`, `rollback`, `max_redeploys`,
 
 ## State files
 
-**Git-ignored (transient):** `.cc-loop-active` sentinel · `.cc-loop-state` counter · `.cc-loop.log` last gate output · `.cc-loop-dev-active` sentinel · `.cc-loop-dev-state` counter · `.cc-dev-reviews-passed` marker · `.cc-loop-dev.log` last gate output · `.cc-deploy-active` sentinel · `.cc-deploy-state` counter · `.cc-deploy.log` last gate output.
+**Git-ignored (transient):** `.cc-loop-active` sentinel · `.cc-loop-state` counter · `.cc-loop.log` last gate output · `.cc-loop-dev-active` sentinel · `.cc-loop-dev-state` counter · `.cc-dev-reviews-passed` marker · `.cc-loop-dev.log` last gate output · `.cc-deploy-active` sentinel · `.cc-deploy-state` counter · `.cc-deploy.log` last gate output · `.cc-loop-gate.lock/` gate mutex (all gates serialize on it; stale locks are reclaimed automatically).
 
 **Committed (project config):** `.cc-verify` — the gate command run on every stop attempt; commit it so a fresh clone keeps the right gate and its contents are trusted (they're `eval`'d by the loop gate) · `.cc-dev.yaml` — `/loop-dev` config (graders, max_retries, base, open_pr) · `.cc-deploy.yaml` — `/loop-deploy` config (deploy, watch, verify, rollback, max_redeploys, migrations_gate).
