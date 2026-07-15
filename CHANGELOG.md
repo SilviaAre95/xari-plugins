@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 4.0.1] — 2026-07-16
+
+### Fixed
+- **`shared` `2.1.2`** — `expo-mobile` stack profile gains a **Testing** section: jest-expo's major is locked to the Expo SDK major (SDK 57 ↔ jest-expo ~57), so test deps must be installed with `npx expo install jest-expo jest` and re-checked with `npx expo install --check` after SDK upgrades — a stale jest-expo fails install with an `ERESOLVE` peer conflict (XARI-83).
+
 ## [marketplace 4.0.0] — 2026-07-16
 
 ### Removed
