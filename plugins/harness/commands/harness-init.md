@@ -18,7 +18,6 @@ Set up the harness in the current project. Make each change visible and ask befo
    .cc-loop.log
    .cc-loop-dev-active
    .cc-loop-dev-state
-   .cc-loop-dev-rounds
    .cc-dev-reviews-passed
    .cc-loop-dev.log
    .cc-deploy-active
@@ -32,8 +31,11 @@ Set up the harness in the current project. Make each change visible and ask befo
 
 4. **Deploy loop config** — if `.cc-deploy.yaml` does not exist at the project root, generate it by **detecting where this repo deploys**, then confirm the detected target with the user before writing:
    - **Railway** — `railway.json`, `railway.toml`, or a linked Railway project present → copy `templates/.cc-deploy.railway.yaml`.
-   - **Vercel** — `vercel.json` or a `.vercel/` directory present → copy `templates/.cc-deploy.vercel.yaml`.
+   - **Vercel, single app** — `vercel.json` or `.vercel/` at the repo root, and no app-level links (below) → copy `templates/.cc-deploy.vercel.yaml` as-is.
+   - **Vercel, monorepo** — `.vercel/` or `vercel.json` inside app directories (check at least `apps/*/` and `packages/*/`; a root link may or may not also exist, and `.vercel/` is gitignored, so on a fresh clone a `vercel.json` may be the only visible signal). Each linked directory is its own Vercel project, so the single-app template would silently deploy only one of them. Copy `templates/.cc-deploy.vercel.yaml`, then rewrite the commands to cover every app, following the template's MONOREPO comment: `deploy` scoped per app with the global `--cwd <app-dir>` flag and chained with `&&`; `watch` set to `"true"` (each chained deploy already blocks until it resolves — the root-scoped default would fail with no root link); `verify` composing every app's health/smoke checks with `&&`; `rollback` scoped per app using the template's flag chain (`r=0; … || r=1; …; test $r -eq 0`) so every app's rollback is attempted and any single failure still fails the whole command — the gate treats rollback exit 0 as "prod safe", so never `&&` (skips apps) or `;` (masks failures). If the root link is itself a deployable app, include it too (`--cwd .`). Confirm the list of deployable apps with the user — every app must appear in `deploy`, `verify`, and `rollback`. These command strings are later `eval`'d by the deploy gate: only embed app paths matching `[A-Za-z0-9._/-]+` — if a detected directory name contains anything else (spaces, quotes, `$`, backticks, `&`, `;`), do not compose the command; show the raw name to the user and have them write the commands themselves.
    - **Neither detected** → copy the neutral `templates/.cc-deploy.yaml`. Its `deploy`/`verify`/`rollback` commands are guarded placeholders that exit non-zero on purpose, so the loop refuses to run until the user fills them in. Tell the user the deploy loop cannot run until they set these for wherever the repo actually deploys.
+
+   If more than one target matches (e.g. `railway.toml` at the root plus Vercel-linked apps), do not pick one silently — surface every match to the user and compose commands covering each target they confirm.
 
    Whichever variant you copy, land it as `.cc-deploy.yaml` at the project root and replace its example domain/commands with the project's real ones where you can infer them. This is committed config (like `.cc-verify`) — do NOT add it to `.gitignore`.
 
