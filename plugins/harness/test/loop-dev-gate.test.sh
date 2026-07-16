@@ -182,4 +182,39 @@ check "single-line marker fails closed" "" "$out" "stale"
 check "single-line marker cleared" "" "$([ -f "$d/.cc-dev-reviews-passed" ] && echo present || echo gone)" "gone"
 rm -rf "$d"
 
+# 20. Review rounds: each green-no-marker block increments the counter
+d=$(mktemp -d); touch "$d/.cc-loop-dev-active"
+out=$(CC_GATE_CMD="true" run "$d")
+check "round 1 counted" "" "$(cat "$d/.cc-loop-dev-rounds" 2>/dev/null)" "1"
+out=$(CC_GATE_CMD="true" run "$d")
+check "round 2 counted" "" "$(cat "$d/.cc-loop-dev-rounds" 2>/dev/null)" "2"
+check "round 2 still asks reviews" "" "$out" "review stages"
+rm -rf "$d"
+
+# 21. Review circuit breaker: past max_review_rounds (default 3) -> disarm,
+#     tell the agent to summarize, no more grader dispatch requests
+d=$(mktemp -d); touch "$d/.cc-loop-dev-active"; echo 3 > "$d/.cc-loop-dev-rounds"
+out=$(CC_GATE_CMD="true" run "$d")
+check "review breaker trips" "" "$out" "Review circuit breaker"
+check_not "review breaker: no grader ask" "$out" "review stages:"
+check "review breaker disarms" "" "$([ -f "$d/.cc-loop-dev-active" ] && echo present || echo gone)" "gone"
+check "review breaker clears rounds" "" "$([ -f "$d/.cc-loop-dev-rounds" ] && echo present || echo gone)" "gone"
+rm -rf "$d"
+
+# 22. max_review_rounds override from .cc-dev.yaml
+d=$(mktemp -d); touch "$d/.cc-loop-dev-active"
+printf 'max_review_rounds: 1\n' > "$d/.cc-dev.yaml"
+out=$(CC_GATE_CMD="true" run "$d")
+check "override: round 1 allowed" "" "$out" "review stages"
+out=$(CC_GATE_CMD="true" run "$d")
+check "override: round 2 trips breaker" "" "$out" "Review circuit breaker"
+rm -rf "$d"
+
+# 23. Success path clears the rounds counter
+d=$(mktemp -d); touch "$d/.cc-loop-dev-active" "$d/.cc-dev-reviews-passed"; echo 2 > "$d/.cc-loop-dev-rounds"
+out=$(CC_GATE_CMD="true" run "$d")
+check "success allows despite rounds" "" "$out" "EMPTY"
+check "success clears rounds" "" "$([ -f "$d/.cc-loop-dev-rounds" ] && echo present || echo gone)" "gone"
+rm -rf "$d"
+
 echo "---"; echo "pass=$pass fail=$fail"; [ "$fail" -eq 0 ]

@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Stop hook: staged dev loop. Opt-in via .cc-loop-dev-active sentinel.
 # Blocks stop until BOTH the deterministic gate (.cc-verify) is green AND the
-# reviews marker (.cc-dev-reviews-passed) exists and is fresh. Circuit breaker
-# after max_retries failed deterministic attempts. Coexists with loop-gate.sh;
-# serialized against sibling gates and overlapping sessions via gate-lock.sh.
+# reviews marker (.cc-dev-reviews-passed) exists and is fresh. Circuit breakers:
+# max_retries failed deterministic attempts, max_review_rounds grading rounds
+# without a clean stamp. Coexists with loop-gate.sh; serialized against
+# sibling gates and overlapping sessions via gate-lock.sh.
 set -uo pipefail
 . "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/gate-lock.sh"
 INPUT=$(cat)
@@ -14,6 +15,7 @@ MARKER="$DIR/.cc-dev-reviews-passed"
 GATE_FILE="$DIR/.cc-verify"
 CFG="$DIR/.cc-dev.yaml"
 LOG="$DIR/.cc-loop-dev.log"
+ROUNDS_FILE="$DIR/.cc-loop-dev-rounds"
 
 # 1. Not armed for loop-dev -> allow stop.
 [ -f "$SENTINEL" ] || exit 0
@@ -44,7 +46,7 @@ if ! ( cd "$DIR" && eval "$GATE" ) >"$LOG" 2>&1; then
   ATTEMPTS=$((ATTEMPTS + 1)); echo "$ATTEMPTS" > "$STATE"
   TAIL="$(tail -40 "$LOG" 2>/dev/null)"
   if [ "$ATTEMPTS" -ge "$MAX" ]; then
-    rm -f "$SENTINEL" "$STATE"
+    rm -f "$SENTINEL" "$STATE" "$ROUNDS_FILE"
     jq -n --arg log "$TAIL" --arg max "$MAX" \
       '{decision:"block", reason:("Circuit breaker: deterministic gate still failing after " + $max + " attempts. Stop fixing and summarize what is still broken:\n" + $log)}'
     exit 0
@@ -86,8 +88,30 @@ marker_fresh() {  # 0 = fresh (or unverifiable outside git), 1 = stale
   [ "$want" = "$fp" ]
 }
 
+# Review-round budget: every stop attempt that still needs grading costs one
+# round. Past max_review_rounds (.cc-dev.yaml, default 3) the loop must stop
+# paying for grader passes — grading that never converges is a task problem,
+# not something more rounds will fix.
+MAXR=3
+if [ -f "$CFG" ]; then
+  vr=$(grep -E '^max_review_rounds:' "$CFG" | head -1 | sed -E 's/^max_review_rounds:[[:space:]]*//; s/[^0-9].*$//')
+  [[ "$vr" =~ ^[0-9]+$ ]] && MAXR="$vr"
+fi
+review_round() {  # increment the round counter; fails when the budget is spent
+  local r
+  r=$(cat "$ROUNDS_FILE" 2>/dev/null || echo 0); [[ "$r" =~ ^[0-9]+$ ]] || r=0
+  r=$((r + 1)); echo "$r" > "$ROUNDS_FILE"
+  [ "$r" -le "$MAXR" ]
+}
+review_breaker() {  # disarm and tell the agent to summarize, not re-grade
+  rm -f "$SENTINEL" "$STATE" "$ROUNDS_FILE" "$MARKER"
+  jq -n --arg max "$MAXR" \
+    '{decision:"block", reason:("Review circuit breaker: " + $max + " review rounds without a clean stamped marker. Stop dispatching graders and do NOT stamp the marker — summarize the outstanding findings and what you changed, then stop. The loop is disarmed.")}'
+}
+
 # 6. Stage 2 — reviews marker must exist.
 if [ ! -f "$MARKER" ]; then
+  if ! review_round; then review_breaker; exit 0; fi
   GRADERS=$(grep -E '^graders:' "$CFG" 2>/dev/null | head -1 | sed -E 's/^graders:[[:space:]]*//; s/[[:space:]]*#.*$//')
   [ -z "$GRADERS" ] && GRADERS="[code-review, security, bugs]"
   jq -n --arg g "$GRADERS" --arg stamp "$STAMP" \
@@ -101,11 +125,12 @@ fi
 #    empty marker (touch) is the legacy/non-git escape hatch.
 if [ -s "$MARKER" ] && ! marker_fresh; then
   rm -f "$MARKER"
+  if ! review_round; then review_breaker; exit 0; fi
   jq -n --arg stamp "$STAMP" \
     '{decision:"block", reason:("Reviews marker is stale: the working tree changed after the graders passed (fingerprint mismatch — late edits or background jobs?). Re-run the affected graders on the current diff, fix any findings, then re-stamp:\n\n  " + $stamp)}'
   exit 0
 fi
 
 # 8. All green: disarm and allow stop.
-rm -f "$SENTINEL" "$STATE" "$MARKER" "$LOG"
+rm -f "$SENTINEL" "$STATE" "$MARKER" "$LOG" "$ROUNDS_FILE"
 exit 0

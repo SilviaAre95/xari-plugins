@@ -6,7 +6,7 @@ allowed-tools: Bash(touch:*), Bash(echo:*), Bash(cat:*), Bash(rm:*)
 
 Arm the dev loop for this project:
 
-!`touch .cc-loop-dev-active && echo 0 > .cc-loop-dev-state && rm -f .cc-dev-reviews-passed && echo "loop-dev armed"`
+!`touch .cc-loop-dev-active && echo 0 > .cc-loop-dev-state && rm -f .cc-dev-reviews-passed .cc-loop-dev-rounds && echo "loop-dev armed"`
 
 The staged dev loop is **ARMED**. Config lives in `.cc-dev.yaml` (graders, max_retries, base, open_pr) — read it now if present.
 
@@ -15,10 +15,15 @@ Work in the `acceptEdits` tier (Shift+Tab) so edits and the allowlist run withou
 1. **Preflight (specs).** If `docs/features/INDEX.md` exists, run the `feature-bank` preflight: identify affected feature(s), confirm the change satisfies their `acceptance_criteria` and violates no `non_goals`. On a spec mismatch, STOP and surface the diff-first escape hatch — do not code around the spec.
 2. **Plan.** Write a short implementation plan. If the invocation included `--check-plan`, post the plan and WAIT for the user's approval before building.
 3. **Build.** Implement the task.
-4. **Review stages (run in PARALLEL).** Dispatch one subagent per grader in `.cc-dev.yaml` `graders` (default `code-review`, `security`, `bugs`) **all at once — in a single batch of concurrent Task calls, not one after another** — each reviewing the diff against `base` (default `main`):
+4. **Review stages (run in PARALLEL, scaled to the diff).** First look at the diff vs `base` and pick the panel from `.cc-dev.yaml` `graders` (default `code-review`, `security`, `bugs`):
+   - **Docs-only diff** (markdown/docs, no executable code or config): `code-review` only.
+   - **Small code diff** (under ~50 changed lines) that touches no hooks, auth, security, templates, or secrets handling: `code-review` + `bugs`.
+   - **Everything else — and ALWAYS when the diff touches hooks, auth/permissions, deploy templates, or secrets handling**: the full configured panel.
+   Dispatch one subagent per selected grader **all at once — in a single batch of concurrent Task calls, not one after another** — each reviewing the diff against `base` (default `main`):
    - `code-review` → correctness/quality review (or the `/code-review` skill).
    - `security` → the `security:code-audit` skill (OWASP, injection, authz, secrets).
    - `bugs` → the `qa:bug-review` skill (edge cases, logic errors).
+   Model tiers: when your dispatch tool supports per-subagent model selection, run `code-review` and `bugs` on a mid-tier model (e.g. sonnet); `security` always inherits the session model — never downgrade it.
    Wait for all of them, then collect every blocking finding across all graders into one list; fix them; re-run only the affected graders (again in parallel) until all are clean. Running the graders concurrently is the point — do not serialize them.
 5. **Finish.** When the deterministic gate (`.cc-verify`) is green AND all graders are clean AND you have made no further edits, stamp the marker with the anchor commit and tree fingerprint so late changes invalidate it:
    `mb=$(git merge-base <base> HEAD) && { echo "$mb"; git diff "$mb" | git hash-object --stdin; } > .cc-dev-reviews-passed`
@@ -29,6 +34,6 @@ Work in the `acceptEdits` tier (Shift+Tab) so edits and the allowlist run withou
    - Only if empty: open the PR with `gh pr create`.
    Post to Slack: a one-line "what changed", the **bare** PR URL on its own line, and the Linear issue key. On the Linear issue: move it to "In Review" and add the PR-link comment ONLY if no comment with this PR URL already exists — a re-run must not double-post. Never merge — that is the user's call from their phone.
 
-The `Stop` hook enforces this: you cannot finish until `.cc-verify` is green and `.cc-dev-reviews-passed` exists. If the deterministic gate fails it feeds the errors back; after `max_retries` a circuit breaker trips — then summarize what is still broken.
+The `Stop` hook enforces this: you cannot finish until `.cc-verify` is green and `.cc-dev-reviews-passed` exists. If the deterministic gate fails it feeds the errors back; after `max_retries` a circuit breaker trips — then summarize what is still broken. Grading is bounded too: after `max_review_rounds` (`.cc-dev.yaml`, default 3) stop attempts without a clean stamped marker, the review circuit breaker disarms the loop — summarize outstanding findings instead of dispatching more graders.
 
 Task: $ARGUMENTS
