@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the **xari-plugins** marketplace and its plugins.
+All notable changes to the **wayworks** marketplace and its plugins.
 Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace and each plugin follow [Semantic Versioning](https://semver.org/).
 
 ## Versioning policy
