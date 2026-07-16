@@ -12,6 +12,14 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 4.0.0] — 2026-07-16
+
+### Removed
+- **`web-tester`** (breaking — the plugin set shrinks to 14). Its single skill (`/web-verify`, Playwright-MCP browser verification) is superseded three ways: Claude's built-in browser tooling (Claude in Chrome), the official `chrome-devtools-mcp` plugin in the Anthropic marketplace, and the `vercel` plugin's full-story `verification` skill. If you depend on `/web-verify`, install `chrome-devtools-mcp` and drive the same flow from its browser tools.
+
+### Changed
+- **`shared` `2.1.1`** — `/wayworks-init` no longer recommends `web-tester` for web frontends; points at the built-in browser tooling / `chrome-devtools-mcp` instead.
+
 ## [marketplace 3.4.1] — 2026-07-16
 
 ### Fixed

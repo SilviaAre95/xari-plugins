@@ -5,8 +5,8 @@
     "email": "silvia@xari.dev"
   },
   "metadata": {
-    "description": "An open-source way of work for AI-assisted building — plugins, second-brain support, and tracker integration",
-    "version": "3.4.1",
+    "description": "An open-source way of work for AI-assisted building \u2014 plugins, second-brain support, and tracker integration",
+    "version": "4.0.0",
     "pluginRoot": "./plugins"
   },
   "plugins": [
@@ -14,7 +14,7 @@
       "name": "shared",
       "source": "./plugins/shared",
       "description": "Shared conventions, coding style, and meta-skills",
-      "version": "2.1.0",
+      "version": "2.1.1",
       "category": "conventions",
       "tags": [
         "conventions",
@@ -101,7 +101,7 @@
     {
       "name": "design",
       "source": "./plugins/design",
-      "description": "Design review — layout + responsive behavior, design systems, usability heuristics, and user flows",
+      "description": "Design review \u2014 layout + responsive behavior, design systems, usability heuristics, and user flows",
       "version": "1.0.1",
       "category": "design",
       "tags": [
@@ -191,20 +191,6 @@
         "drift",
         "workflow",
         "governance"
-      ]
-    },
-    {
-      "name": "web-tester",
-      "source": "./plugins/web-tester",
-      "description": "Live web-app verification — drive real browser flows via Playwright MCP, assert console and network health",
-      "version": "1.0.0",
-      "category": "testing",
-      "tags": [
-        "testing",
-        "browser",
-        "playwright",
-        "e2e",
-        "devtools"
       ]
     }
   ]
