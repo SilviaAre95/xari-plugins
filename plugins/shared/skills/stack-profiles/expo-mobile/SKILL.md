@@ -23,6 +23,13 @@ This profile is automatically loaded when working in an Expo project.
 - Deep links: define the scheme in `app.json` and test cold-start routing
 - Push: expo-notifications tokens are per-device — store server-side keyed to the user
 
+## Testing
+
+- **jest-expo** is the Jest preset, and its major version is locked to the Expo SDK major (SDK 57 ↔ jest-expo ~57). A mismatched jest-expo fails `npm install` with an `ERESOLVE` peer-dependency conflict on `expo`.
+- Install and upgrade test dependencies with `npx expo install jest-expo jest` — never plain `npm install`/`yarn add`, which pull latest and break the SDK pairing
+- After any SDK upgrade, run `npx expo install --check` (or `--fix`) to catch stale SDK-paired packages, jest-expo included
+- **@testing-library/react-native** for component tests; keep `react-test-renderer` matched to the project's React version
+
 ## Build & Release
 
 - EAS Build for binaries; keep `app.json` versioning in sync with release tags
