@@ -35,6 +35,11 @@ Break down the feature or epic: **$ARGUMENTS** (granularity defaults to detailed
    - Getting a vertical slice working end-to-end first
    - Reducing risk (hard/uncertain tasks first)
 
+6. **Deliver where the project lives** (detect, never assume):
+   - **Tracker**: if a tracker MCP is connected (e.g. Linear tools are available), create one issue per task in the feature's project — title, description, estimate, and blocking relations from step 4 — and reply with the issue keys in suggested order. Confirm with the user before creating more than 10 issues.
+   - **Second brain**: if this project's CLAUDE.md names a vault or notes location, save the breakdown summary as a note linked from the project's main note.
+   - **Neither connected**: print the breakdown as markdown, exactly as below. Never error or apologize for missing integrations.
+
 ## Output Format
 
 ```markdown

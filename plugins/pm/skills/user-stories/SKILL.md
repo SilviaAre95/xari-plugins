@@ -46,6 +46,11 @@ Then <expected result>.
    - Third-party integrations
    - Performance considerations
 
+6. **Deliver where the project lives** (detect, never assume):
+   - **Tracker**: if a tracker MCP is connected (e.g. Linear tools are available), create each story as an issue in the feature's project (story as title, acceptance criteria in the description, MVP stories prioritized) and reply with the issue keys. Confirm with the user before creating more than 10 issues.
+   - **Second brain**: if this project's CLAUDE.md names a vault or notes location, save the story set as a note linked from the project's main note.
+   - **Neither connected**: print the stories as markdown, exactly as below. Never error or apologize for missing integrations.
+
 ## Output Format
 
 ```markdown

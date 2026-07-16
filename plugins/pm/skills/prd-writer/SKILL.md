@@ -110,6 +110,11 @@ Write a PRD for the feature: **$ARGUMENTS** (audience defaults to both engineeri
    - **Stakeholders**: focus on business value, metrics, timeline
    - **Both**: full document with clear sections for each audience
 
+6. **Deliver where the project lives** (detect, never assume):
+   - **Second brain**: if this project's CLAUDE.md names a vault or notes location, save the PRD as a note there (kebab-case filename, linked from the project's main note) instead of only printing it.
+   - **Tracker**: if a tracker MCP is connected (e.g. Linear tools are available), attach the PRD to the feature's project/epic — as a document or a linked comment — and reply with the link.
+   - **Neither connected**: print the PRD as markdown, exactly as below. Never error or apologize for missing integrations.
+
 ## Constraints
 
 - Keep it under 2 pages for MVP features, 4 pages for large features

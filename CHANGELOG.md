@@ -18,6 +18,7 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 - **`web-tester`** (breaking — the plugin set shrinks to 14). Its single skill (`/web-verify`, Playwright-MCP browser verification) is superseded three ways: Claude's built-in browser tooling (Claude in Chrome), the official `chrome-devtools-mcp` plugin in the Anthropic marketplace, and the `vercel` plugin's full-story `verification` skill. If you depend on `/web-verify`, install `chrome-devtools-mcp` and drive the same flow from its browser tools.
 
 ### Changed
+- **`pm` `1.1.0`** — pm skills now deliver where the project lives, by detection: with a tracker MCP connected (e.g. Linear), `task-breakdown` and `user-stories` create real issues (estimates, dependencies, acceptance criteria) and `prd-writer` attaches the PRD to the epic; with a second-brain vault named in CLAUDE.md, documents land as linked notes. With neither, plain markdown output as before — integrations are detected, never required.
 - **`shared` `2.1.1`** — `/wayworks-init` no longer recommends `web-tester` for web frontends; points at the built-in browser tooling / `chrome-devtools-mcp` instead.
 
 ## [marketplace 3.4.1] — 2026-07-16
