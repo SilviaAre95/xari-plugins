@@ -1,6 +1,6 @@
 # wayworks
 
-An open-source way of work for AI-assisted building — Claude Code plugins with second-brain (Obsidian) support and tracker (Linear) integration. 15 plugins, 43 skills (5 of them stack profiles), 6 commands, and 5 sub-agents.
+An open-source way of work for AI-assisted building — Claude Code plugins with second-brain (Obsidian) support and tracker (Linear) integration. 14 plugins, 42 skills (5 of them stack profiles), 6 commands, and 5 sub-agents.
 
 - `/wayworks-init` — bootstrap a repo: plugin fleet, CLAUDE.md header, verify gate
 - `/wayworks-onboard` — link a project's triangle: repo ↔ second brain ↔ tracker
@@ -51,7 +51,6 @@ claude plugin install tech-writer@wayworks
 claude plugin install pm@wayworks
 claude plugin install harness@wayworks
 claude plugin install feature-bank@wayworks
-claude plugin install web-tester@wayworks
 ```
 
 Or bootstrap a repo with the whole fleet in one step: install `shared`, then run `/wayworks-init` inside the repo.
@@ -219,14 +218,6 @@ Source-of-truth feature specs with preflight/postflight gates that stop agent dr
 |-------|-------------|
 | `/feature-bank` | Enforce `/docs/features/` specs before any code change; interactive backfill for existing codebases |
 
-### web-tester
-
-Live web-app verification. Declares a **Playwright MCP server** (headless, via `npx @playwright/mcp`) so browser tools are available wherever the plugin is installed.
-
-| Skill | Description |
-|-------|-------------|
-| `/web-verify` | Drive the critical user flow in a real browser; assert console + network are clean, screenshot evidence |
-
 ## Per-project setup
 
 ### Settings template
@@ -250,7 +241,7 @@ The easiest path is `/wayworks-init`, which writes this for you. Manually, drop 
 
 Then add the stack-specific set:
 
-- **Full-stack web app**: + `architect`, `backend-dev`, `frontend-dev`, `design`, `web-tester`
+- **Full-stack web app**: + `architect`, `backend-dev`, `frontend-dev`, `design`
 - **Backend API service**: + `architect`, `backend-dev`, `data-engineer`, `devops`
 - **Data platform**: + `data-engineer`, `devops`
 - **Infrastructure / Terraform**: + `devops`
@@ -308,8 +299,7 @@ wayworks/
 │   ├── tech-writer/      # README, API docs, ADR templates
 │   ├── pm/               # User stories, tasks, PRDs
 │   ├── harness/          # Autonomy tiers, verify loops, hooks, templates, tests
-│   ├── feature-bank/     # Feature-spec governance + check-bank.sh validator
-│   └── web-tester/       # Live browser verification, Playwright MCP
+│   └── feature-bank/     # Feature-spec governance + check-bank.sh validator
 │       ├── .claude-plugin/
 │       │   └── plugin.json
 │       ├── skills/         # (or commands/ for harness + shared)
