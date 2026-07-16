@@ -1,13 +1,19 @@
 {
   "name": "harness",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "description": "Tiered autonomy + build-test-fix, staged dev, and prod deploy loops for hands-off AI workflows",
   "author": {
     "name": "Silvia Arellano"
   },
   "repository": "https://github.com/SilviaAre95/wayworks",
   "license": "MIT",
-  "keywords": ["workflow", "automation", "hooks", "autonomy", "loop"],
+  "keywords": [
+    "workflow",
+    "automation",
+    "hooks",
+    "autonomy",
+    "loop"
+  ],
   "commands": "./commands/",
   "hooks": "./hooks/hooks.json"
 }

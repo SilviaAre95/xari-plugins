@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 3.4.0] — 2026-07-16
+
+### Changed
+- **`harness` `1.4.0`** — loop-dev token-efficiency release, from an audit of the first four production runs (~840k output tokens for 3 PRs). (1) **Grader scaling**: the review panel now scales to the diff — docs-only diffs run `code-review` alone, small non-sensitive code diffs skip `security`, and the full panel still always runs when the diff touches hooks, auth, deploy templates, or secrets handling. (2) **Grader model tiers**: `code-review`/`bugs` graders may run on a mid-tier model when the dispatch tool supports it; `security` always inherits the session model. (3) **Review circuit breaker**: grading is now bounded like the deterministic gate — after `max_review_rounds` (`.cc-dev.yaml`, default 3) stop attempts without a clean stamped marker, the gate disarms and instructs the agent to summarize outstanding findings instead of dispatching more graders (previously unbounded; only wall-clock limits contained a non-converging grade-fix loop). New transient state file `.cc-loop-dev-rounds` (gitignored via `/harness-init`, reset on arm).
+
 ## [marketplace 3.3.1] — 2026-07-15
 
 ### Fixed
