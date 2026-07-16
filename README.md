@@ -1,6 +1,6 @@
 # wayworks
 
-An open-source way of work for AI-assisted building — Claude Code plugins with second-brain (Obsidian) support and tracker (Linear) integration. 15 plugins, 43 skills, 6 commands, 5 sub-agents, and 5 stack profiles.
+An open-source way of work for AI-assisted building — Claude Code plugins with second-brain (Obsidian) support and tracker (Linear) integration. 15 plugins, 43 skills (5 of them stack profiles), 6 commands, and 5 sub-agents.
 
 - `/wayworks-init` — bootstrap a repo: plugin fleet, CLAUDE.md header, verify gate
 - `/wayworks-onboard` — link a project's triangle: repo ↔ second brain ↔ tracker
