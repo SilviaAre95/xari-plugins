@@ -12,6 +12,11 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 3.4.1] — 2026-07-16
+
+### Fixed
+- **`harness` `1.4.1`** — Vercel deploy config no longer assumes a single app (XARI-82). `/harness-init` deploy-target detection now distinguishes a root-linked single Vercel app from a monorepo with app-level links (`apps/*/.vercel`, `apps/*/vercel.json`, …), which it previously missed entirely. For monorepos it rewrites the whole config: `deploy` scoped per app with Vercel's global `--cwd <app-dir>` flag and chained with `&&`, `watch` set to `"true"` (chained deploys already block; the root-scoped default fails with no root link), `verify` composing every app's checks, and `rollback` per app via a flag chain (`r=0; … || r=1; …; test $r -eq 0`) so every rollback is attempted and any single failure still fails the whole command (`&&` would skip apps; `;` would mask failures from the gate's rolled-back-vs-act-now verdict) — confirming the app list with the user (an app missing from `rollback` stays broken on rollback). Because these strings are later `eval`'d by the deploy gate, detected app paths are restricted to `[A-Za-z0-9._/-]+`; anything else falls back to user-written commands. Multiple matching targets (e.g. Railway root + Vercel apps) are surfaced instead of silently picking one. `templates/.cc-deploy.vercel.yaml` documents the single-app assumption and shows the monorepo shape.
+
 ## [marketplace 3.4.0] — 2026-07-16
 
 ### Changed
