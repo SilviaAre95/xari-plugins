@@ -1,6 +1,6 @@
 # wayworks
 
-An open-source way of work for AI-assisted building — Claude Code plugins with second-brain (Obsidian) support and tracker (Linear) integration. 14 plugins, 42 skills (5 of them stack profiles), 6 commands, and 5 sub-agents.
+An open-source way of work for AI-assisted building — Claude Code plugins with second-brain (Obsidian) support and tracker (Linear) integration. 14 plugins, 43 skills (5 of them stack profiles), 6 commands, and 5 sub-agents.
 
 - `/wayworks-init` — bootstrap a repo: plugin fleet, CLAUDE.md header, verify gate
 - `/wayworks-onboard` — link a project's triangle: repo ↔ second brain ↔ tracker
@@ -19,10 +19,11 @@ An open-source way of work for AI-assisted building — Claude Code plugins with
 - `/wayworks-init` — inside a repo: detects the stack, enables the right plugin fleet in committed `.claude/settings.json` (so your whole team gets it on clone), scaffolds the CLAUDE.md config header, and hands off to `/harness-init` for the verify gate.
 
 **Daily**
+- Front half of a feature: superpowers `brainstorming` → spec → `writing-plans`, then hand the plan to the loop: `/loop-dev --plan docs/superpowers/plans/<plan>.md`
 - `/loop-build` — build-test-fix until the verify gate is green
-- `/loop-dev` — full feature loop: spec → plan → build → review/security/bug subagents → PR
-- `/loop-deploy` — deploy → watch → verify prod → fix/redeploy or roll back
-- `feature-bank` guards scope on every code edit; review/test/security skills on demand; `/web-verify` drives your live app in a real browser.
+- `/loop-dev` — full feature loop: spec preflight → plan → build → parallel review/security/bug (+ optional design) subagents → dev test → docs postflight → PR + CI watch
+- `/loop-deploy` — deploy → watch → verify prod → fix/redeploy or roll back → sync repo docs, vault log, and Linear
+- `feature-bank` guards scope on every code edit; review/test/security skills on demand; browser verification via Claude's built-in browser tooling or `chrome-devtools-mcp`.
 
 **Adapts to your setup**: no vault → knowledge lives in `docs/`; no Linear → pick Obsidian checkboxes, GitHub Issues, or `docs/BACKLOG.md`. Obsidian + Linear is the recommended pairing, not a requirement.
 
@@ -147,6 +148,7 @@ Data pipeline and SQL workflows.
 | `/pipeline-design` | Design ETL/ELT pipelines with monitoring and error handling |
 | `/schema-review` | Review schemas for normalization, indexes, naming |
 | `/sql-optimizer` | Analyze and optimize SQL queries |
+| `/pipeline-verify` | Run a pipeline against a bounded sample in dev; assert schema, row accounting, idempotency, clean logs |
 
 ### design
 
@@ -207,8 +209,8 @@ Tiered autonomy + verification loops for hands-off AI workflows. Ships hooks (au
 |---------|-------------|
 | `/harness-init` | Set up the harness in a project — verify gate (`.cc-verify`), loop configs, gitignore |
 | `/loop-build` | Build-test-fix loop that runs until the verify gate is green |
-| `/loop-dev` | Staged dev loop: spec → plan → build → review/security/bug subagents → fix → PR |
-| `/loop-deploy` | Prod deploy loop: deploy → watch → verify → fix/redeploy until healthy, rollback on exhaustion |
+| `/loop-dev` | Staged dev loop: spec preflight → plan (`--plan <path>`) → build → review subagents → dev test → docs postflight → PR + CI watch |
+| `/loop-deploy` | Prod deploy loop: deploy → watch → verify → fix/redeploy until healthy, rollback on exhaustion; knowledge sync on success |
 
 ### feature-bank
 
@@ -234,7 +236,8 @@ The easiest path is `/wayworks-init`, which writes this for you. Manually, drop 
     "harness@wayworks": true,
     "security@wayworks": true,
     "test-builder@wayworks": true,
-    "feature-bank@wayworks": true
+    "feature-bank@wayworks": true,
+    "superpowers@claude-plugins-official": true
   }
 }
 ```

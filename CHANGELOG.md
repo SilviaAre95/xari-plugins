@@ -12,6 +12,20 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 4.1.0] — 2026-07-17
+
+Pipeline-gaps release — closes the gaps between the documented way-of-working and what the loops actually execute (2026-07-17 inspection).
+
+### Added
+- **`harness` `1.5.0`** — `/loop-dev` grows three stages of coverage: (1) **`--plan <path>`** hands the loop a written implementation plan (e.g. superpowers `writing-plans` output) instead of the loop's own short plan — the documented handoff from brainstorm/spec to the loop; (2) a **dev-test stage** between reviews and finish that exercises the change the way the product is used — the feature spec's `test_plan` first, else stack-inferred (browser flow via built-in tooling/`chrome-devtools-mcp`, endpoint checks, or `data-engineer:pipeline-verify` for pipelines) — recorded as the PR's "How verified"; (3) **PR CI watch** (`gh pr checks --watch --fail-fast`) — red checks are loop work, Slack ping only after green. Grader panel is now extensible: `design` maps to `design:layout-review` (+`heuristic-eval` for new flows), any other grader name maps to the same-named skill, unknown names stop the loop instead of being skipped. The finish stage now runs the `feature-bank` postflight (Gate 3) before stamping the reviews marker, so spec docs are fingerprinted with the code. `/loop-deploy` success is now a **knowledge sync**: repo docs confirmed current, a dated log line appended to the project's vault note (when a vault is declared), Linear issue to Done — then the Slack announce. `templates/.cc-dev.yaml` documents the `design` grader and `max_review_rounds`.
+- **`feature-bank` `1.2.0`** — optional `test_plan:` frontmatter field on feature specs: concrete, agent-executable dev checks (flows to drive, commands over sample data), consumed by `/loop-dev`'s dev-test stage; scaffolding proposes it, postflight runs it.
+- **`data-engineer` `1.1.0`** — new `/pipeline-verify` skill: run a pipeline against a bounded sample in dev and assert schema conformance, row accounting (in = out + rejected), null/dupe rates, DLQ state, idempotency on re-run, and clean logs. The data-platform counterpart of driving a web app in a browser.
+- **`docs/reference/model-policy.md`** — which model runs which stage (grader tiers, agent pins, frontmatter pinning rules) and the local-model path (per-session proxy; stages can't route to local models).
+
+### Fixed
+- **`security` `1.0.3`** — `security-scan` no longer claims a dated model version for the external scanner's `--opus` mode.
+- README: stale `/web-verify` reference from before the 4.0.0 web-tester removal; settings template now includes `superpowers@claude-plugins-official` (matching `/wayworks-init`); CLAUDE.md plugin count 15 → 14.
+
 ## [marketplace 4.0.1] — 2026-07-16
 
 ### Fixed
