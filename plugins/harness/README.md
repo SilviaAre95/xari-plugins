@@ -20,9 +20,14 @@ Read-only tools are auto-approved in every tier so exploration never stalls.
 
 ### `/loop-dev <task> [--check-plan]`
 
-Extends `/loop-build` into a full staged dev loop: spec preflight, plan, build,
-then **review stages** (`code-review`, `security`, `bugs` by default) each run
-as a dispatched subagent against the diff. Its `Stop` hook won't let Claude
+Extends `/loop-build` into a full staged dev loop: spec preflight, plan (pass
+`--plan <path>` to hand it a written plan, e.g. from superpowers), build,
+**review stages** (`code-review`, `security`, `bugs` by default; add `design`
+for frontend repos — any grader name maps to the same-named skill) each run
+as a dispatched subagent against the diff, then a **dev-test stage** that
+exercises the change the way the product is used (feature-spec `test_plan`,
+browser flow, endpoint checks, or `pipeline-verify` for data pipelines) and a
+**feature-bank postflight** before the marker is stamped. Its `Stop` hook won't let Claude
 finish until `.cc-verify` is green **and** `.cc-dev-reviews-passed` exists —
 a failing `.cc-verify` clears the marker, so a broken build forces reviews to
 re-run. In a git repo the marker is stamped with an anchor commit (the
@@ -31,9 +36,10 @@ against it, which the hook re-verifies at stop time — tracked changes landing
 after the graders passed, committed or not, invalidate it and force a
 re-review. An empty (`touch`ed) marker is the non-git escape hatch and is
 trust-based. On success it
-pushes the branch and opens a PR (unless `open_pr: false`). Config — graders,
-`max_retries`, diff `base`, `open_pr` — lives in `.cc-dev.yaml`. Pass
-`--check-plan` to pause after the plan step for your approval before it builds.
+pushes the branch, opens a PR (unless `open_pr: false`), and watches the PR's
+CI checks to green before handing over. Config — graders, `max_retries`, diff
+`base`, `open_pr` — lives in `.cc-dev.yaml`. Pass `--check-plan` to pause
+after the plan step for your approval before it builds.
 
 ### `/loop-deploy [--env prod|staging]`
 
@@ -44,6 +50,8 @@ and won't let Claude stop while verification is failing — it fixes the problem
 loop, and escalates instead of looping forever, so prod is never left broken.
 Deploying to prod is a hard Approve/Deny gate, and a deploy that runs a DB
 migration needs a **second** explicit approval when `migrations_gate` is true.
+On success it syncs the knowledge surfaces — repo docs, the project's vault
+note log, the Linear issue — before announcing on Slack.
 Config — `deploy`, `watch`, `verify`, `rollback`, `max_redeploys`,
 `migrations_gate` — lives in `.cc-deploy.yaml`.
 
