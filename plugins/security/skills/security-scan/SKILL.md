@@ -92,7 +92,7 @@ This will:
 - Tighten wildcard permissions to scoped alternatives
 - Never modify manual-only suggestions
 
-### Opus 4.6 Deep Analysis
+### Deep analysis (`--opus` flag)
 
 Run the adversarial three-agent pipeline for deeper analysis:
 

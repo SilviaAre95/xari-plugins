@@ -42,7 +42,7 @@ For any request/spec mismatch, or an intentional feature change:
 
 1. Update frontmatter of every touched feature file: `last_modified` = today, `status` if it changed.
 2. Append to `<feature-id>.CHANGELOG.md` (create if missing) — format: `references/spec-format.md`.
-3. Re-verify: restate each acceptance criterion and confirm it's satisfied or was explicitly spec-updated.
+3. Re-verify: restate each acceptance criterion and confirm it's satisfied or was explicitly spec-updated; run the spec's `test_plan` when present.
 4. Report: features updated, files changed, changelog entry.
 
 ## Scaffolding a new feature
@@ -50,7 +50,7 @@ For any request/spec mismatch, or an intentional feature change:
 When the user describes new behavior:
 
 1. Don't jump to code. Generate a feature file from `templates/feature.md`; pick an ID (confirm if ambiguous).
-2. Fill `acceptance_criteria` (concrete, testable behaviors — not implementation) and `depends_on`.
+2. Fill `acceptance_criteria` (concrete, testable behaviors — not implementation) and `depends_on`. Propose a `test_plan` — how an agent verifies this in dev (flows to drive, commands over sample data), per project type.
 3. `non_goals` is the most important anti-drift field: list what the feature will NOT do. Push the user; suggest 3–5 plausible ones if needed (`references/examples.md`).
 4. Add an INDEX.md entry (status=`proposed`, summary, top 2 non_goals); create `<id>.CHANGELOG.md` with an initial entry.
 5. Show the user the file; get confirmation before implementing.
