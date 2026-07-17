@@ -22,7 +22,11 @@ acceptance_criteria:
 non_goals:
   - <thing this feature will NOT do>
   - <another exclusion>
+test_plan:            # optional
+  - <concrete dev check: a flow to drive, a command over sample data, an endpoint to hit>
 ```
+
+`test_plan` is consumed by `/loop-dev`'s dev-test stage: write checks an agent can execute against a dev environment (drive this URL flow, run the pipeline over this sample slice, hit this endpoint and expect X). Not "run the unit tests" — the verify gate owns those.
 
 Body sections (markdown, kept short):
 
