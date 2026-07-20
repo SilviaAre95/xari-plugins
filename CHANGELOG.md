@@ -12,6 +12,13 @@ Format follows [Keep a Changelog](https://keepachangelog.com/); the marketplace 
 
 ---
 
+## [marketplace 4.1.1] — 2026-07-20
+
+Loop-durability release — five failure modes observed across production runs (kaffecard XARI-70/71).
+
+### Fixed
+- **`harness` `1.5.1`** — `/loop-dev` hardening from live runs that shipped the wrong change twice and lost an hour of finished work. (1) **Read the task**: the loop is routinely handed a bare tracker issue key as its entire task; it now fetches the issue body first (Linear MCP `get_issue`, else `gh issue view`) and **stops** when it cannot — previously it reconstructed scope from the branch name and shipped plausible, well-reviewed, wrong changes that passed every downstream gate. (2) **Commit before reviews**: the implementation is committed at the end of the build stage, so a run killed at its wall-clock limit no longer loses uncommitted work. (3) **Branch discipline**: work stays on the checked-out branch — no creating, switching, or pushing an invented branch name, which breaks the PR-first lookup that makes re-runs idempotent. (4) **Never stage blindly**: explicit paths only, never `git add -A`/`git add .` (they sweep unrelated edits and stale index entries into a PR), and loop-state files stay untracked — a tracked marker invalidates its own fingerprint and livelocks the gate. (5) **Grader dedup**: exactly one subagent per grader per round, and re-review re-runs only the graders whose findings were fixed — plus `security` whenever a fix touched executable code, since a fix aimed at one grader's finding routinely lands in another's domain.
+
 ## [marketplace 4.1.0] — 2026-07-17
 
 Pipeline-gaps release — closes the gaps between the documented way-of-working and what the loops actually execute (2026-07-17 inspection).

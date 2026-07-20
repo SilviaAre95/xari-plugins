@@ -20,7 +20,8 @@ Read-only tools are auto-approved in every tier so exploration never stalls.
 
 ### `/loop-dev <task> [--check-plan]`
 
-Extends `/loop-build` into a full staged dev loop: spec preflight, plan (pass
+Extends `/loop-build` into a full staged dev loop: read the task (a bare
+tracker key is fetched, never guessed at), spec preflight, plan (pass
 `--plan <path>` to hand it a written plan, e.g. from superpowers), build,
 **review stages** (`code-review`, `security`, `bugs` by default; add `design`
 for frontend repos — any grader name maps to the same-named skill) each run
